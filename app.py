@@ -181,6 +181,42 @@ def index():
     return render_template("index.html")
 
 
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route("/upload", methods=["GET", "POST"])
+@login_required
+def upload():
+    """Upload an image file for a dress."""
+    if request.method == "POST":
+        # check if the post request has the file part
+        # support either input name 'file' or existing template name 'dressImage'
+        if "file" in request.files:
+            file = request.files["file"]
+        elif "dressImage" in request.files:
+            file = request.files["dressImage"]
+        else:
+            flash("No file part")
+            return redirect(request.url)
+        if file.filename == "":
+            flash("No selected file")
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            save_dir = app.config.get("UPLOAD_FOLDER") or os.path.join(app.root_path, "static", "uploads")
+            os.makedirs(save_dir, exist_ok=True)
+            save_path = os.path.join(save_dir, filename)
+            file.save(save_path)
+            flash("Upload successful")
+            return redirect(url_for("index"))
+        else:
+            flash("Invalid file type")
+            return redirect(request.url)
+
+    return render_template("upload.html")
+
+
 
 
 
