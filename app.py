@@ -1,4 +1,9 @@
-from flask import Flask, g
+import os
+
+from flask import Flask, flash, g, redirect, render_template, request, session, url_for
+from werkzeug.security import check_password_hash, generate_password_hash
+
+
 import sqlite3
 
 app = Flask(__name__)
@@ -25,6 +30,13 @@ def home():
     cursor = db.execute('SELECT * FROM dummy').fetchall()
     one = cursor[0]["boba"]
     return f"How many boba drinks!! {one}"
+
+
+
+
+
+
+
 
 # in app.py
 #source .venv/bin/activate
