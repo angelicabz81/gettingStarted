@@ -101,6 +101,7 @@ def register():
         if existing is not None:
             return apology("username already exists", 400)
 
+        # ChatGPT suggested change: use parameter tuple to prevent SQL injection
         # Insert new user into users table (use parameter tuple and commit)
         try:
             db.execute(
