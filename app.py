@@ -96,16 +96,22 @@ def register():
         if not password or not confirmation or password != confirmation:
             return apology("Input valid password", 400)
 
-        # Check for duplicate password
-        if db.execute("SELECT 1 FROM users WHERE username = ?", username):
+        # Check for duplicate username
+        existing = db.execute("SELECT 1 FROM users WHERE username = ?", (username,)).fetchone()
+        if existing is not None:
             return apology("username already exists", 400)
 
-        # Insert new user into users table
+        # Insert new user into users table (use parameter tuple and commit)
         try:
-            db.execute("INSERT INTO users (username, email, phone, hash) VALUES (?,?,?,?)",
-                       username, email, phone, generate_password_hash(password))
-        except ValueError:
-            return apology("Uername already exists")
+            db.execute(
+                "INSERT INTO users (username, email, phone, hash) VALUES (?,?,?,?)",
+                (username, email, phone, generate_password_hash(password)),
+            )
+            db.commit()
+        except sqlite3.IntegrityError:
+            return apology("username already exists", 400)
+        except Exception:
+            return apology("Registration failed", 500)
 
         # Go to homepage
         flash("You are registered!")
