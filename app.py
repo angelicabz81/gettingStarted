@@ -2,6 +2,7 @@ import os
 
 from flask import Flask, flash, g, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
+from flask_session import Session
 
 
 import sqlite3
