@@ -135,7 +135,7 @@ def login():
         # Query database for username
         rows = db.execute(
             "SELECT * FROM users WHERE username = ?", request.form.get("username")
-        ).fetchall
+        ).fetchall()
 
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(
