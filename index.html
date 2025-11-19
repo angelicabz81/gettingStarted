@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+        <link href="styles.css" rel="stylesheet">
+        <title>Trivia!</title>
+        <script>
+            // TODO: Add code to check answers to questions
+
+            // Wait for DOM content to load
+            document.addEventListener('DOMContentLoaded', function() {
+
+                // Get element with "correct" class
+                let correct = document.querySelector('.correct');
+
+                // Event listener for correct button
+                correct.addEventListener('click', function() {
+
+                    // Set bg color to green, give user congrats
+                    correct.style.backgroundColor = 'green';
+                    document.querySelector('#feedback1').innerHTML = 'Correct!';
+                });
+
+                // Get all "incorrect" class elements, put them into list
+               let incorrects = document.querySelectorAll('.incorrect');
+
+               // Add event listener for each incorrect button
+               for (let i = 0; i < incorrects.length; i++) {
+                    incorrects[i].addEventListener('click', function() {
+
+                        // Set bg color to red, tell user failed
+                        incorrects[i].style.backgroundColor = 'red';
+                        document.querySelector('#feedback1').innerHTML = 'Incorrect';
+                    });
+               }
+
+               // Check free response submission
+               document.querySelector('#check').addEventListener('click', function() {
+
+                    // Get user's input element
+                    let input = document.querySelector('input');
+
+                    // Compare user's actual value
+                    if (input.value == 'Mimmy') {
+                        input.style.backgroundColor = 'green';
+                        document.querySelector('#feedback2').innerHTML = 'Correct!';
+                    } else {
+                        input.style.backgroundColor = 'red';
+                        document.querySelector('#feedback2').innerHTML = 'Incorrect';
+                    }
+               });
+
+            });
+        </script>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Trivia!</h1>
+        </div>
+
+        <div class="container">
+            <div class="section">
+                <h2>Part 1: Multiple Choice </h2>
+                <hr>
+
+                <!-- TODO: Add multiple choice question here -->
+                 <h3>How many apples tall is Hello Kitty?</h3>
+                 <button class = "incorrect">3 apples</button>
+                 <button class = "incorrect">8 apples</button>
+                 <button class = "correct">5 apples</button>
+
+                 <p id = "feedback1"></p>
+            </div>
+
+            <div class="section">
+                <h2>Part 2: Free Response</h2>
+                <hr>
+
+                <!-- TODO: Add free response question here -->
+                <h3>What is the name of Hello Kitty's sister?</h3>
+                <input type = "text"></input>
+                <button id = "check">Check answer!</button>
+
+                <p id = "feedback2"></p>
+            </div>
+        </div>
+    </body>
+</html>
