@@ -3,11 +3,30 @@ import os
 from flask import Flask, flash, g, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_session import Session
-
-
 import sqlite3
 
+from help import apology, login_required, lookup, usd
+
+# Import to save uploaded image
+from fileinput import filename
+from werkzeug.utils import secure_filename
+
 app = Flask(__name__)
+
+# For Upload Route
+# Creates path to the folder where all uploaded folders will be held, in / format: project/static/uploads
+# Hardcoding /static/uploads, Flask may have difficulty finding correct directory
+# app.root_path is the absolute file system path to folder where main Flask file is/ to Flask base directory
+UPLOAD_FOLDER = os.path.join(app.root_path, "static", "uploads")
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
+ALLOWED_EXTENSIONS = {"png","jpg", "jpeg"}
+
+
+# Configure session to use filesystem (instead of signed cookies)
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 # Path to SQLite database file
 DATABASE = "wardrobe.db"
@@ -25,12 +44,134 @@ def close_db(exception):
     if db is not None:
         db.close()
 
+
+@app.after_request
+def after_request(response):
+    """Ensure responses aren't cached"""
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Expires"] = 0
+    response.headers["Pragma"] = "no-cache"
+    return response
+
+"""
+test page
 @app.route("/")
 def home():
     db = get_db()
     cursor = db.execute('SELECT * FROM dummy').fetchall()
     one = cursor[0]["boba"]
     return f"How many boba drinks!! {one}"
+"""
+
+
+# Register
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    """Register user"""
+
+    if request.method == "POST":
+
+        db = get_db()
+        # Validate username
+        username = request.form.get("username")
+        if not username:
+            return apology("Must provide username", 400)
+
+
+        # Validate email
+        email = request.form.get("email")
+        if not email:
+            return apology("Must provide email", 400)
+
+        print("test update")
+        # Validate phone number
+        phone = request.form.get("phone")
+        if not phone:
+            return apology("Must provide phone", 400)
+
+        # Validate password
+        password = request.form.get("password")
+        confirmation = request.form.get("confirmation")
+
+        if not password or not confirmation or password != confirmation:
+            return apology("Input valid password", 400)
+
+        # Check for duplicate password
+        if db.execute("SELECT 1 FROM users WHERE username = ?", username):
+            return apology("username already exists", 400)
+
+        # Insert new user into users table
+        try:
+            db.execute("INSERT INTO users (username, email, phone, hash) VALUES (?,?,?,?)",
+                       username, email, phone, generate_password_hash(password))
+        except ValueError:
+            return apology("Username already exists")
+
+        # Go to homepage
+        flash("You are registered!")
+        return redirect("/")
+    else:
+        return render_template("register.html")
+
+# Log in
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    """Log user in"""
+
+    # Forget any user_id
+    session.clear()
+    db = get_db()
+
+    # User reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+        # Ensure username was submitted
+        if not request.form.get("username"):
+            return apology("must provide username", 400)
+
+        # Ensure password was submitted
+        elif not request.form.get("password"):
+            return apology("must provide password", 400)
+
+        # Query database for username
+        rows = db.execute(
+            "SELECT * FROM users WHERE username = ?", request.form.get("username")
+        ).fetchall
+
+        # Ensure username exists and password is correct
+        if len(rows) != 1 or not check_password_hash(
+            rows[0]["hash"], request.form.get("password")
+        ):
+            return apology("invalid username and/or password", 400)
+
+        # Remember which user has logged in
+        # THIS IS THE CURRENT USER LOGGED IN
+        session["user_id"] = rows[0]["id"]
+
+        # Redirect user to home page
+        return redirect("/")
+
+    # User reached route via GET (as by clicking a link or via redirect)
+    else:
+        return render_template("login.html")
+
+
+# Log out
+@app.route("/logout")
+def logout():
+    """Log user out"""
+
+    # Forget any user_id
+    session.clear()
+
+    # Redirect user to login form
+    return redirect("/")
+
+
+# Go to home page
+@app.route("/")
+@login_required
+def index():
+    return render_template("index.html")
 
 
 

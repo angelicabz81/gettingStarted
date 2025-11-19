@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Catalog
+{% endblock %}
+
+
+{% block main %}
+    <table class = "table table-striped">
+        <thead>
+            <tr>
+                <th class = "text-start">Size</th>
+                <th class = "text-end">Color</th>
+                <th class = "text-end">Date Posted</th>
+                <th class = "text-end">Image</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for dress in catalog %}
+                <tr>
+                    <td class = "text-start"> {{ dress["size"] }}</td>
+                    <td class = "text-end"> {{ dress["color"]}}</td>
+                    <td class = "text-end"> {{ dress["time_posted"] }}</td>
+                    <td class = "text-end"> <img src = '{{ dress["image_url"] }}' ></td>
+                 </tr>
+
+              {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

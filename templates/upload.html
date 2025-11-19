@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Upload
+{% endblock %}
+
+{% block main %}
+    <script>
+        
+        // Ensure valid file format, show preview of image
+        document.addEventListener('DOMContentLoaded', function() {
+        const input = document.querySelector("input");
+        const preview = document.querySelector(".preview");
+
+        input.style.opacity = 0;
+        input.addEventListener("change", updateImageDisplay);
+        function updateImageDisplay() {
+        while (preview.firstChild) {
+            preview.removeChild(preview.firstChild);
+        }
+
+        const curFiles = input.files;
+        if (curFiles.length === 0) {
+            const para = document.createElement("p");
+            para.textContent = "No files currently selected for upload";
+            preview.appendChild(para);
+        } else {
+            const list = document.createElement("ul");
+            preview.appendChild(list);
+
+            for (const file of curFiles) {
+            const listItem = document.createElement("li");
+            const para = document.createElement("p");
+
+            if (validFileType(file)) {
+                //para.textContent = `File name ${file.name}`;
+                const image = document.createElement("img");
+                image.src = URL.createObjectURL(file);
+                image.alt = image.title = file.name;
+
+                listItem.appendChild(image);
+                listItem.appendChild(para);
+            } else {
+                para.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
+                listItem.appendChild(para);
+            }
+            list.appendChild(listItem);
+            }
+        }
+        }
+        // https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Formats/Image_types
+        const fileTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        ];
+
+        function validFileType(file) {
+        return fileTypes.includes(file.type);
+        }
+
+        });
+    </script>
+
+
+    <form action="/upload" method="post" enctype="multipart/form-data">
+
+        <!-- Drop down for sizes -->
+        <div class = "mb-3">
+            <select class="form-select mx-auto w-auto" name="size" required>
+                <option value="" selected="">Size</option>
+                {% for size in ["x-small", "small", "medium", "large", "x-large"]%}
+                    <option value = "{{ size }}"> {{ size }} </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Drop down for colors -->
+        <div class = "mb-3">
+            <select class="form-select mx-auto w-auto" name="color" required>
+                <option value="" selected="">Color</option>
+                {% for color in ["red", "pink", "blue", "purple", "black", "white"] %}
+                    <option value = "{{ color }}"> {{ color }} </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Allow user to upload photo of dress -->
+         <label for="image_uploads">Upload image of dress</label>
+         <div class = "mb-3">
+            <input type="file" id="image_uploads" name="dressImage" accept="image/png, image/jpeg, image/jpg" required>
+        </div>
+
+        <div class = "preview">
+            <p>No image currently selected</p>
+        </div>
+
+
+        <button type="submit">Upload dress</button>
+    </form>
+
+{% endblock %}
