@@ -105,7 +105,7 @@ def register():
             db.execute("INSERT INTO users (username, email, phone, hash) VALUES (?,?,?,?)",
                        username, email, phone, generate_password_hash(password))
         except ValueError:
-            return apology("Username already exists")
+            return apology("Uername already exists")
 
         # Go to homepage
         flash("You are registered!")
