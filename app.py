@@ -24,10 +24,14 @@ def home():
     db = get_db()
     cursor = db.execute('SELECT * FROM dummy').fetchall()
     one = cursor[0]["boba"]
-    return f"Hello, Flask i love dogsboba!! {one}"
+    return f"How many boba drinks!! {one}"
 
 # in app.py
 #source .venv/bin/activate
+# python3 -m pip
 # python3 -m flask --app app --debug run
 if __name__ == "__main__":
     app.run(debug=True)
+
+#sqlite_web wardrobe.db
+
