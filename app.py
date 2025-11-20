@@ -256,6 +256,17 @@ def catalog():
         return render_template("catalog.html", catalog=catalog)
 
 
+#Test Select dress
+@app.route("/selectDress", methods=["GET", "POST"])
+@login_required
+def selectDress():
+
+        print("foergnjnrtgjkg")
+        print("hello world")
+        flash("You have selected this dress!")
+        return redirect("/catalog")# test file!!
+
+
 # in app.py
 #source .venv/bin/activate
 # python3 -m pip
