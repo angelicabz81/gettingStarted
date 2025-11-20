@@ -242,29 +242,31 @@ def upload():
     
 
 # Show all dresses
-@app.route("/catalog", methods=["GET", "POST"])
+@app.route("/catalog")
 @login_required
 def catalog():
 
-        print("foergnjnrtgjkg")
-        print("hello world")
-        print("etgnbbgejblfrjkbfrjbkefjk")
-        print("trehwtg")
-        testing = 56
-        db = get_db()
-        catalog = db.execute("SELECT size, color, image_url, time_posted FROM dresses").fetchall()
-        return render_template("catalog.html", catalog=catalog)
+    db = get_db()
+    catalog = db.execute("SELECT id, size, color, image_url, time_posted FROM dresses").fetchall()
+    return render_template("catalog.html", catalog=catalog)
 
 
 #Test Select dress
 @app.route("/selectDress", methods=["GET", "POST"])
 @login_required
 def selectDress():
+    if request.method == "POST":
+        dressId = request.form.get("dressId")
 
-        print("foergnjnrtgjkg")
-        print("hello world")
+        if not dressId:
+            return apology("No dress selected")
         flash("You have selected this dress!")
-        return redirect("/catalog")# test file!!
+
+        db = get_db()
+        db.execute("INSERT INTO holdings (user_id, dress_id) VALUES (?, ?)", (session["user_id"], dressId))
+        db.commit()
+
+        return redirect("/")# Go back to homepage
 
 
 # in app.py
