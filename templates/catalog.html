@@ -23,6 +23,12 @@
                     <td class = "text-end"> {{ dress["color"]}}</td>
                     <td class = "text-end"> {{ dress["time_posted"] }}</td>
                     <td class = "text-end"> <img src = '{{ dress["image_url"] }}' ></td>
+                    <td>
+                        <form action = "/selectDress" method = "post">
+                        <input type="hidden" id="dressId" value="{{ dress['id'] }}">
+                        <button class="btn btn-primary" type="submit">Select dress</button>
+                        </form>
+                    </td>
                  </tr>
 
               {% endfor %}
