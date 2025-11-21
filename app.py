@@ -249,7 +249,8 @@ def catalog():
     db = get_db()
 
     # Only select dress that are not owned by the current user, not in holdings, or no longer being rented
-    catalog = db.execute("SELECT id, size, color, image_url, time_posted FROM dresses").fetchall()
+    catalog = db.execute("SELECT * FROM dresses WHERE id NOT IN ( SELECT dress_id FROM holdings WHERE rent_end IS NULL) AND owner != ?"
+    ,( session["user_id"],)).fetchall()
 
     return render_template("catalog.html", catalog=catalog)
 
@@ -261,18 +262,25 @@ def selectDress():
 
     if request.method == "POST":
         dressId = request.form.get("dressId")
+        db = get_db()
 
-    # Get selected dress ID
-    if not dressId:
-        return apology("No dress selected")
-    flash("You have selected this dress!")
+        # Get selected dress ID
+        if not dressId:
+            return apology("No dress selected")
+        flash("You have selected this dress!")
 
-    # Add dress to user's holdings
-    db = get_db()
-    db.execute("INSERT INTO holdings (user_id, dress_id) VALUES (?, ?)", (session["user_id"], dressId))
-    db.commit()
+        #Check that dress is available
+        available = db.execute("SELECT 1 FROM dresses WHERE id = ? AND owner != ? AND id NOT IN ( SELECT dress_id FROM holdings WHERE rent_end IS NULL)"
+        ,( dressId, session["user_id"],)).fetchone()
 
-    return redirect("/")# Go back to homepage
+        if not available:
+            return apology("Dress is not available")
+
+        # Add dress to user's holdings
+        db.execute("INSERT INTO holdings (user_id, dress_id) VALUES (?, ?)", (session["user_id"], dressId))
+        db.commit()
+
+        return redirect("/")# Go back to homepage
 
 
 # in app.py
