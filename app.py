@@ -247,7 +247,10 @@ def upload():
 def catalog():
 
     db = get_db()
+
+    # Only select dress that are not owned by the current user, not in holdings, or no longer being rented
     catalog = db.execute("SELECT id, size, color, image_url, time_posted FROM dresses").fetchall()
+
     return render_template("catalog.html", catalog=catalog)
 
 
@@ -255,18 +258,21 @@ def catalog():
 @app.route("/selectDress", methods=["GET", "POST"])
 @login_required
 def selectDress():
+
     if request.method == "POST":
         dressId = request.form.get("dressId")
 
-        if not dressId:
-            return apology("No dress selected")
-        flash("You have selected this dress!")
+    # Get selected dress ID
+    if not dressId:
+        return apology("No dress selected")
+    flash("You have selected this dress!")
 
-        db = get_db()
-        db.execute("INSERT INTO holdings (user_id, dress_id) VALUES (?, ?)", (session["user_id"], dressId))
-        db.commit()
+    # Add dress to user's holdings
+    db = get_db()
+    db.execute("INSERT INTO holdings (user_id, dress_id) VALUES (?, ?)", (session["user_id"], dressId))
+    db.commit()
 
-        return redirect("/")# Go back to homepage
+    return redirect("/")# Go back to homepage
 
 
 # in app.py
