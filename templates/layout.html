@@ -14,7 +14,7 @@
         <!-- https://favicon.io/emoji-favicons/money-bag/ -->
         <link href="/static/icon.png" rel="icon">
 
-        <link href="/static/styles.css" rel="stylesheet">
+        <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
 
         <title>Pocket Quince: {% block title %}{% endblock %}</title>
 
