@@ -246,14 +246,15 @@ def upload():
 @login_required
 def catalog():
         
-    sizes = request.form.getlist("size")
-    colors = request.form.getlist("color")
+    sizes = request.args.getlist("size")
+    colors = request.args.getlist("color")
 
     db = get_db()
 
     # Only select dress that are not owned by the current user, not in holdings, or no longer being rented
     catalog = db.execute("SELECT * FROM dresses WHERE id NOT IN ( SELECT dress_id FROM holdings WHERE rent_end IS NULL) AND owner != ?"
     ,( session["user_id"],)).fetchall()
+    print("Catalog before filtering:", catalog)
 
     filtered = []
     for dress in catalog:
@@ -264,6 +265,7 @@ def catalog():
             continue 
         filtered.append(dress)
     catalog = filtered
+    print("Catalog after filtering:", catalog)
 
     return render_template("catalog.html", catalog=catalog)
 
