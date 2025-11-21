@@ -283,6 +283,18 @@ def selectDress():
         return redirect("/")# Go back to homepage
 
 
+# Holdings page
+@app.route("/holdings")
+@login_required
+def holdings():
+    db = get_db()
+
+    holdings = db.execute("SELECT * FROM dresses where id IN ( SELECT dress_id FROM holdings WHERE user_id = ? AND rent_end IS NULL)", (session["user_id"],)).fetchall()
+    return render_template("holdings.html", holdings=holdings)
+
+
+
+
 # in app.py
 #source .venv/bin/activate
 # python3 -m pip
