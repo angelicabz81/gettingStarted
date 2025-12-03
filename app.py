@@ -370,6 +370,13 @@ def holdings():
     return render_template("holdings.html", holdings=holdings)
 
 
+#MESSAGES????
+@app.route("/messages", methods=["GET", "POST"])
+@login_required
+def messages():
+    db = get_db()
+
+
 # in app.py
 #source .venv/bin/activate
 # python3 -m pip
