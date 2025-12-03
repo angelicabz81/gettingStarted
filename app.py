@@ -303,7 +303,6 @@ def selectDress():
 @login_required
 def holdings():
     db = get_db()
-    #cat test 2 weeks ago
 
     holdings = db.execute("SELECT * FROM dresses where id IN ( SELECT dress_id FROM holdings WHERE user_id = ? AND rent_end IS NULL)", (session["user_id"],)).fetchall()
     return render_template("holdings.html", holdings=holdings)
