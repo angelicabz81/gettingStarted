@@ -319,7 +319,7 @@ def selectDress():
         db.execute("INSERT INTO holdings (user_id, dress_id) VALUES (?, ?)", (session["user_id"], dressId))
         db.commit()
 
-        return redirect("/")# Go back to homepage
+        return redirect("/holdings")# Go back to homepage
 
 @app.route("/returnDress", methods=["POST"])
 @login_required
@@ -333,7 +333,7 @@ def returnDress():
         return apology("No dress selected")
     
     #Check that dress is in currently rented(in user's holdings)
-    rented = db.execute("SELECT 1 FROM holdings WHERE user_id = ? AND dress_id = ? AND rent_end IS NULL", (session["user_id"], dressId))
+    rented = db.execute("SELECT 1 FROM holdings WHERE user_id = ? AND dress_id = ? AND rent_end IS NULL", (session["user_id"], dressId)).fetchone()
     if not rented:
         return apology("Dress is not currently rented")
     
@@ -354,7 +354,17 @@ def returnDress():
 def holdings():
     db = get_db()
 
-    holdings = db.execute("SELECT * FROM dresses where id IN ( SELECT dress_id FROM holdings WHERE user_id = ? AND rent_end IS NULL)", (session["user_id"],)).fetchall()
+    holdingBuffer = db.execute("SELECT * FROM dresses JOIN holdings as h on dresses.id = h.dress_id WHERE h.user_id = ? AND h.rent_end IS NULL ORDER BY h.rent_start DESC", (session["user_id"],)).fetchall()
+
+    #Add owner info to each holding
+    holdings = []
+    for holding in holdingBuffer:
+        holding = dict(holding)  # Convert Row object to dictionary not readonly to allow changes
+        owner = db.execute("SELECT username, email, phone FROM users WHERE id = ?", (holding["owner"],)).fetchone()
+        holding["owner_name"] = owner["username"]
+        holding["owner_email"] = owner["email"]
+        holding["owner_phone"] = owner["phone"]
+        holdings.append(holding)
     return render_template("holdings.html", holdings=holdings)
 
 
