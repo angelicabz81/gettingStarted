@@ -288,7 +288,6 @@ def catalog():
             continue 
         filtered.append(dress)
     catalog = filtered
-    print("Catalog after filtering:", catalog)
 
     return render_template("catalog.html", catalog=catalog)
 

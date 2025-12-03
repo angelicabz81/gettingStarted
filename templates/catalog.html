@@ -26,7 +26,7 @@
             <!--Filter between color in dresses -->
             <div>
                 <label>color!</label><br>
-                {% for color in ["red", "pink", "blue", "purple", "black", "white"] %}
+                {% for color in ["red", "pink", "blue", "purple", "black", "white", "green", "yellow/gold", "gray/silver", "other"] %}
                     <div class = "form-check form-check-inline">
                         <input class ="form-check-input" type="checkbox" name="color" value="{{ color }}">
                         <label class="form-check-label" for="{{ color }}">{{ color }}</label>
@@ -43,34 +43,40 @@
    
     
 
-<!-- Display catalog of dresses -->
-    <table class = "table table-striped">
-        <thead>
-            <tr>
-                <th class = "text-start">Size</th>
-                <th class = "text-end">Color</th>
-                <th class = "text-end">Date Posted</th>
-                <th class = "text-end">Image</th>
-            </tr>
-        </thead>
+<!-- Display catalog of dresses only if there are any dresses that match the filters -->
+    {% if catalog|length == 0 %}
+        <h3>No dresses match the selected filters. Please try different filters.</h3>
+    {% else %}
 
-        <tbody>
-            {% for dress in catalog %}
+
+        <table class = "table table-striped">
+            <thead>
                 <tr>
-                    <td class = "text-start"> {{ dress["size"] }}</td>
-                    <td class = "text-end"> {{ dress["color"]}}</td>
-                    <td class = "text-end"> {{ dress["time_posted"] }}</td>
-                    <td class = "text-end"> <img src = '{{ dress["image_url"] }}' ></td>
-                    <td>
-                        <form action = "/selectDress" method = "post">
-                            <input type="hidden" name="dressId" value="{{ dress['id'] }}">
-                            <button class="btn btn-primary" type="submit">Select dress</button>
-                        </form>
-                    </td>
-                 </tr>
+                    <th class = "text-start">Size</th>
+                    <th class = "text-end">Color</th>
+                    <th class = "text-end">Date Posted</th>
+                    <th class = "text-end">Image</th>
+                </tr>
+            </thead>
 
-              {% endfor %}
-        </tbody>
-    </table>
+            <tbody>
+                {% for dress in catalog %}
+                    <tr>
+                        <td class = "text-start"> {{ dress["size"] }}</td>
+                        <td class = "text-end"> {{ dress["color"]}}</td>
+                        <td class = "text-end"> {{ dress["time_posted"] }}</td>
+                        <td class = "text-end"> <img src = '{{ dress["image_url"] }}' ></td>
+                        <td>
+                            <form action = "/selectDress" method = "post">
+                                <input type="hidden" name="dressId" value="{{ dress['id'] }}">
+                                <button class="btn btn-primary" type="submit">Select dress</button>
+                            </form>
+                        </td>
+                    </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 
 {% endblock %}
