@@ -234,7 +234,6 @@ def upload():
         db.commit()
 
         #return redirect("/") # goes to homepage, maybe change later?
-        print("erhtgbjrtig")
         return render_template("test.html", image_url=image_url)# test displaying the image
 
     else:
@@ -360,6 +359,9 @@ def holdings():
     holdings = []
     for holding in holdingBuffer:
         holding = dict(holding)  # Convert Row object to dictionary not readonly to allow changes
+
+        holding["owner_id"] = holding["owner"]
+
         owner = db.execute("SELECT username, email, phone FROM users WHERE id = ?", (holding["owner"],)).fetchone()
         holding["owner_name"] = owner["username"]
         holding["owner_email"] = owner["email"]
