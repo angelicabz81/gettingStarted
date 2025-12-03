@@ -63,40 +63,28 @@
     </script>
 
 
-    <form action="/upload" method="post" enctype="multipart/form-data">
+        <!-- show dresses owned by users -->
 
-        <!-- Drop down for sizes -->
-        <div class = "mb-3">
-            <select class="form-select mx-auto w-auto" name="size" required>
-                <option value="" selected="">Size</option>
-                {% for size in ["x-small", "small", "medium", "large", "x-large"]%}
-                    <option value = "{{ size }}"> {{ size }} </option>
-                {% endfor %}
-            </select>
-        </div>
+    <table class = "table table-striped">
+        <thead>
+            <tr>
+                <th class = "text-start">renter</th>
+                <th class = "text-end">contact</th>
+                <th class = "text-end">Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dress in dresses %}
+                <tr>
+                    <td class = "text-start"> {{ dress["size"] }}</td>
+                    <td class = "text-end"> {{ dress["color"]}}</td>
+                    <td class = "text-end"> <img src = "{{ dress['image_url'] }}" ></td>
+                        
+                </tr>
 
-        <!-- Drop down for colors -->
-        <div class = "mb-3">
-            <select class="form-select mx-auto w-auto" name="color" required>
-                <option value="" selected="">Color</option>
-                {% for color in ["red", "pink", "blue", "purple", "black", "white"] %}
-                    <option value = "{{ color }}"> {{ color }} </option>
-                {% endfor %}
-            </select>
-        </div>
+            {% endfor %}
+        </tbody>
+    </table>
 
-        <!-- Allow user to upload photo of dress -->
-         <label for="image_uploads">Upload image of dress</label>
-         <div class = "mb-3">
-            <input type="file" id="image_uploads" name="dressImage" accept="image/png, image/jpeg, image/jpg" required>
-        </div>
-
-        <div class = "preview">
-            <p>No image currently selected</p>
-        </div>
-
-
-        <button type="submit">Upload dress</button>
-    </form>
 
 {% endblock %}

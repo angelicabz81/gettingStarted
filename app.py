@@ -238,7 +238,21 @@ def upload():
         return render_template("test.html", image_url=image_url)# test displaying the image
 
     else:
-        return render_template("upload.html")
+        # get all dresses owned by the current user, and renter information
+        db = get_db()
+
+        # all dresses owned by user
+        dresses = db.execute("SELECT * FROM dresses WHERE owner = ?", (session["user_id"],)).fetchall()
+
+        # append renter info, if any, to each dresses dictionary
+        for dress in dresses:
+            #renter = db.execute("SELECT username, email, phone FROM users where id IN (SELECT user_id FROM holdings WHERE dress_id IN (SELECT id FROM dresses WHERE owner = ?))", (session["user_id"],))            dresses["renter"] = renter["username"] 
+            #dresses["renter"] = renter["username"]
+            #dresses["renter_email"] = renter["email"]
+            print("meow")
+            #dresses["renter_phone"] = renter["phone"]
+
+        return render_template("upload.html", dresses=dresses)
     
 
 # Show all dresses
@@ -296,6 +310,32 @@ def selectDress():
         db.commit()
 
         return redirect("/")# Go back to homepage
+
+@app.route("/returnDress", methods=["POST"])
+@login_required
+def returnDress():
+
+    dressId = request.form.get("dressId")
+    db = get_db()
+
+    #get selected dress ID
+    if not dressId:
+        return apology("No dress selected")
+    
+    #Check that dress is in currently rented(in user's holdings)
+    rented = db.execute("SELECT 1 FROM holdings WHERE user_id = ? AND dress_id = ? AND rent_end IS NULL", (session["user_id"], dressId))
+    if not rented:
+        return apology("Dress is not currently rented")
+    
+    # Set rent_end to current time
+    db.execute("UPDATE holdings SET rent_end = CURRENT_TIMESTAMP WHERE user_id = ? AND dress_id = ? AND rent_end IS NULL",(session["user_id"], dressId))
+    db.commit()
+
+    flash("Thank you for returning the dress!")
+    return redirect("/")# Go back to homepage
+
+
+
 
 
 # Holdings page
