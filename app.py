@@ -242,15 +242,25 @@ def upload():
         db = get_db()
 
         # all dresses owned by user
-        dresses = db.execute("SELECT * FROM dresses WHERE owner = ?", (session["user_id"],)).fetchall()
+        dressesBuffer = db.execute("SELECT * FROM dresses WHERE owner = ?", (session["user_id"],)).fetchall()
 
+        dresses = []
         # append renter info, if any, to each dresses dictionary
-        for dress in dresses:
-            #renter = db.execute("SELECT username, email, phone FROM users where id IN (SELECT user_id FROM holdings WHERE dress_id IN (SELECT id FROM dresses WHERE owner = ?))", (session["user_id"],))            dresses["renter"] = renter["username"] 
-            #dresses["renter"] = renter["username"]
-            #dresses["renter_email"] = renter["email"]
-            print("meow")
-            #dresses["renter_phone"] = renter["phone"]
+        for dress in dressesBuffer:
+
+            dress = dict(dress)  # Convert Row object to dictionary not readonly to allow changes
+            renter = db.execute("SELECT users.username, users.email, users.phone FROM users JOIN holdings ON users.id = holdings.user_id WHERE holdings.dress_id = ? AND holdings.rent_end IS NULL", (dress["id"],)).fetchone()
+            
+            if renter:
+                dress["renter"] = renter["username"]
+                dress["renter_email"] = renter["email"]
+                dress["renter_phone"] = renter["phone"]
+            else:
+                dress["renter"] = None
+                dress["renter_email"] = None
+                dress["renter_phone"] = None
+
+            dresses.append(dress)
 
         return render_template("upload.html", dresses=dresses)
     

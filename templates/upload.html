@@ -69,15 +69,17 @@
         <thead>
             <tr>
                 <th class = "text-start">renter</th>
-                <th class = "text-end">contact</th>
+                <th class = "text-end">email</th>
+                <th class = "text-end">number</th>
                 <th class = "text-end">Image</th>
             </tr>
         </thead>
         <tbody>
             {% for dress in dresses %}
                 <tr>
-                    <td class = "text-start"> {{ dress["size"] }}</td>
-                    <td class = "text-end"> {{ dress["color"]}}</td>
+                    <td class = "text-start"> {{ dress["renter"] }}</td>
+                    <td class = "text-end"> {{ dress["renter_email"]}}</td>
+                    <td class = "text-end"> {{ dress["renter_phone"]}}</td>
                     <td class = "text-end"> <img src = "{{ dress['image_url'] }}" ></td>
                         
                 </tr>
