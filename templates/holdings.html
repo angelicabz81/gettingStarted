@@ -30,9 +30,23 @@
                             <button class="btn btn-primary" type="submit">Return dress</button>
                         </form>
                     </td>
+                    <td>
+                        <form action="/messages" method="post" class="mt-2">
+                            <input type="hidden" name="receiver_id" value="{{ dress['owner_id'] }}">
+                            <input type="hidden" name="dress_id" value="{{ dress['id'] }}">
+                            <div class="input-group">
+                                <input type="text" name="body" class="form-control" placeholder="Message owner..." required>
+                                <button type="submit" class="btn btn-primary btn-sm">Send</button>
+                            </div>
+                        </form>
+                    </td>
                  </tr>
 
               {% endfor %}
         </tbody>
     </table>
+
+
+
+
 {% endblock %}

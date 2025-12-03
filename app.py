@@ -248,13 +248,15 @@ def upload():
         for dress in dressesBuffer:
 
             dress = dict(dress)  # Convert Row object to dictionary not readonly to allow changes
-            renter = db.execute("SELECT users.username, users.email, users.phone FROM users JOIN holdings ON users.id = holdings.user_id WHERE holdings.dress_id = ? AND holdings.rent_end IS NULL", (dress["id"],)).fetchone()
+            renter = db.execute("SELECT users.id as renter_id,users.username, users.email, users.phone FROM users JOIN holdings ON users.id = holdings.user_id WHERE holdings.dress_id = ? AND holdings.rent_end IS NULL", (dress["id"],)).fetchone()
             
             if renter:
+                dress["renter_id"] = renter["renter_id"]
                 dress["renter"] = renter["username"]
                 dress["renter_email"] = renter["email"]
                 dress["renter_phone"] = renter["phone"]
             else:
+                dress["renter_id"] = None
                 dress["renter"] = None
                 dress["renter_email"] = None
                 dress["renter_phone"] = None
@@ -374,6 +376,28 @@ def holdings():
 @login_required
 def messages():
     db = get_db()
+
+    #send a message
+    if request.method == "POST":
+        receiver_id = request.form.get("receiver_id")
+        content = request.form.get("body")
+        dress_id = request.form.get("dress_id")
+
+        if not receiver_id or not content:
+            return apology("Missing message information")
+
+        db.execute("INSERT INTO messages (sender_id, receiver_id, dress_id, body) VALUES (?,?,?,?)",
+                     (session["user_id"], receiver_id, dress_id, content)) 
+        db.commit()
+
+        flash("Message sent!")
+        return redirect("/messages")
+    else:
+        #view messages
+        messages = db.execute("SELECT messages.*, users.username as sender_name, dresses.image_url, dresses.size, dresses.color FROM messages JOIN users ON messages.sender_id = users.id LEFT JOIN dresses ON dresses.id = messages.dress_id WHERE messages.receiver_id = ? ORDER BY messages.created_at DESC", (session["user_id"],)).fetchall()
+        return render_template("messages.html", messages=messages)
+
+
 
 
 # in app.py

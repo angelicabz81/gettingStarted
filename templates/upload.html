@@ -118,6 +118,19 @@
                     <td class = "text-end"> {{ dress["renter_email"]}}</td>
                     <td class = "text-end"> {{ dress["renter_phone"]}}</td>
                     <td class = "text-end"> <img src = "{{ dress['image_url'] }}" ></td>
+                    <td>
+                        {% if dress.renter_id %}
+                            <form action="/messages" method="post" class="mt-2">
+                                <input type="hidden" name="receiver_id" value="{{ dress['renter_id'] }}">
+                                <input type="hidden" name="dress_id" value="{{ dress['id'] }}">
+                                <div class="input-group">
+                                    <input type="text" name="body" class="form-control" placeholder="Message renter..." required>
+                                    <button type="submit" class="btn btn-primary btn-sm">Send</button>
+                                </div>
+                            </form>
+                        {% endif %}
+
+                    </td>
                         
                 </tr>
 

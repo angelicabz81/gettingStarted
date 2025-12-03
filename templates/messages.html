@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Messages
+{% endblock %}
+
+{% block main %}
+    <h2>Inbox</h2>
+
+    <ul class="list-group">
+        {% for message in messages %}
+        <li class="list-group-item">
+            <strong>From:</strong> {{ message["sender_name"] }}<br>
+
+            {% if message["image_url"] %}
+                <img src="{{ message['image_url'] }}"><br>
+            {% endif %}
+
+            <h3>{{ message["body"] }}</h3>
+            
+        </li>
+        {% else %}
+        <li class="list-group-item text-muted">No messages yet.</li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
+
