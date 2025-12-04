@@ -25,7 +25,7 @@ body {
     color: #F9E3EC;
     border-color: #C76B9B;
 
-    font-size: 1.3rem;
+    font-size: 1rem;
     border-radius: 10px;
     padding: 10px 30px;
     box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2);
@@ -57,6 +57,36 @@ nav .navbar-brand
 }
 .navbar {
   background: linear-gradient(to right, #C76B9B, #cb7ea6)
+}
+
+
+/* Filter */
+
+.filter-title {
+    font-family: "Merriweather", serif;
+    color: #3B2F2F
+}
+
+.filter-pill { /* pill, rounded corners*/
+  border-radius: 900px; 
+  background-color: #C76B9B;
+  color: white;
+  border: none;
+
+}
+
+.filter-pill:hover {
+  background-color: #C989A2;
+}
+
+.btn-check:checked + .filter-pill {
+    background-color: #C98AA7;   /*Changes color after selection */
+    color: white;
+}
+
+.filter-button {
+    border-radius: 900px;
+    
 }
 
 

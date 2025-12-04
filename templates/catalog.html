@@ -11,33 +11,40 @@
     <form action = "/catalog" method = "get">
 
          <!--Filter between size in dresses -->
-        <div class = "row">
-            <div>
-                <label>size!</label><br>
-                {% for size in ["x-small", "small", "medium", "large", "x-large"]%}
-                    <div class = "form-check form-check-inline">
-                        <input class ="form-check-input" type="checkbox" name="size" value="{{ size }}">
-                        <label class="form-check-label" for="{{ size }}">{{ size }}</label>
-                    </div>
-                {% endfor %}
 
-            </div>
-
-            <!--Filter between color in dresses -->
-            <div>
-                <label>color!</label><br>
-                {% for color in ["red", "pink", "blue", "purple", "black", "white", "green", "yellow/gold", "gray/silver", "other"] %}
-                    <div class = "form-check form-check-inline">
-                        <input class ="form-check-input" type="checkbox" name="color" value="{{ color }}">
-                        <label class="form-check-label" for="{{ color }}">{{ color }}</label>
+        <div class = "card p-3 mb-4">
+            <div class = "row">
+                <div class = "col-md-6">
+                    <h6 class = "filter-title mb-2 body-font">Size</h6>
+                    <div class = "d-flex flex-wrap gap-2">
+                        {% for size in ["x-small", "small", "medium", "large", "x-large"]%}
+                            
+                            <input class ="btn-check" type="checkbox" name="size" value="{{ size }}" id ="{{ size }}">
+                            <label class="btn btn-outline-secondary btn-sm filter-pill body-font" for="{{ size }}">{{ size }}</label>
+                        
+                        {% endfor %}
                     </div>
-                {% endfor %}      
+                </div>
+
+                <div class = "col-md-6">
+                    <h6 class = "filter-title mb-2 body-font">Color</h6>
+                    <div class = "d-flex flex-wrap gap-2">
+                        {% for color in ["red", "pink", "blue", "purple", "black", "white", "green", "yellow/gold", "gray/silver", "other"] %}
+                            
+                            <input class ="btn-check" type="checkbox" name="color" value="{{ color }}" id ="{{ color }}">
+                            <label class="btn btn-outline-secondary btn-sm filter-pill body-font" for="{{ color }}">{{ color }}</label>
+                        
+                        {% endfor %}
+                    </div>
+                </div>      
             </div>
-       
+            <br>
             <div>
-                <button type="submit">filter!</button>
+                <button class = "btn btn-primary body-font" type="submit">filter!</button>
             </div>
         </div>
+
+            
     </form>
 
    
