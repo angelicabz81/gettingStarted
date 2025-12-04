@@ -64,11 +64,14 @@ nav .navbar-brand
 
 .filter-title {
     font-family: "Merriweather", serif;
-    color: #3B2F2F
+    color: #3B2F2F;
+    font-size: 150%;
+    
 }
 
 .filter-pill { /* pill, rounded corners*/
   border-radius: 900px; 
+  font-size: 100%;
   background-color: #C76B9B;
   color: white;
   border: none;

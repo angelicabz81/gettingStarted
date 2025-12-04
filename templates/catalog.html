@@ -55,7 +55,29 @@
         <h3>No dresses match the selected filters. Please try different filters.</h3>
     {% else %}
 
+        {% for dress in catalog %}
+            <div class="card mb-4">
+                <img src='{{ dress["image_url"] }}' alt="Dress Image">
+                <h2 class = "body-font">{{ dress["size"] }}</h2>
+                <h2 class = "body-font">{{ dress["color"] }}</h2>
+                <h4 class = "body-font">{{ dress["time_posted"] }}</h4>
+                <br>
+                <form action = "/selectDress" method = "post">
+                    <input type="hidden" name="dressId" value="{{ dress['id'] }}">
+                    <button class="btn btn-primary" type="submit">Select dress</button>
+                </form>
+                <br
 
+            </div>
+
+
+
+        {% endfor %}
+
+
+
+
+        <!--
         <table class = "table table-striped">
             <thead>
                 <tr>
@@ -84,6 +106,10 @@
                 {% endfor %}
             </tbody>
         </table>
+        -->
+
+
+
     {% endif %}
 
 {% endblock %}
