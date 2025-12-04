@@ -130,3 +130,18 @@ img.item {
   font-size: 14px;
   text-align: center;
 }
+
+#handshakeImage {
+  width: 130px;
+  height: 130px;
+}
+
+#moneyImage {
+  width: 130px;
+  height: 130px;
+}
+
+#dressImage {
+  width: 130px;
+  height: 130px;
+}
