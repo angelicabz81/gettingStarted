@@ -94,3 +94,39 @@ table img {
   order: 1;
 }
 
+
+/* For Home Page */
+
+/*
+Source - https://stackoverflow.com/a
+Posted by Rickard Elimää
+Retrieved 2025-12-03, License - CC BY-SA 3.0
+*/
+
+/*
+Source - https://stackoverflow.com/a
+Posted by Rickard Elimää
+Retrieved 2025-12-03, License - CC BY-SA 3.0
+*/
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.item-container {
+  text-align: center;
+}
+
+img.item {
+  width: 100%;
+  height: auto;
+}
+
+.caption {
+  font-size: 14px;
+  text-align: center;
+}
