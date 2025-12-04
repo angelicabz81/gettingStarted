@@ -176,9 +176,19 @@ def logout():
 
 # Go to home page
 @app.route("/")
-@login_required
-def index():
-    return render_template("index.html")
+def landingPage():
+    #return render_template("index.html")
+    #return redirect("/catalog")
+    if "user_id" in session:
+        # Go to dress catalog for logged in users
+        return redirect("/catalog")
+    else:
+        #Homepage for not logged in users
+        return render_template("index.html")
+
+
+
+
 
 
 # Upload dress to table
