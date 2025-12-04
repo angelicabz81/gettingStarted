@@ -92,7 +92,17 @@ nav .navbar-brand
     
 }
 
+/* Catalog */
+.catalogImage{
+  width: 55%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+}
 
+.dress-card {
+  height: 100%
+}
 
 /* Table */
 

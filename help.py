@@ -3,6 +3,8 @@ import requests
 from flask import redirect, render_template, session
 from functools import wraps
 
+from datetime import datetime
+
 
 def apology(message, code=400):
     """Render message as an apology to user."""
@@ -44,26 +46,11 @@ def login_required(f):
 
     return decorated_function
 
+def formatTime(value):
+    """Format a date to Month, Day, Year"""
 
-def lookup(symbol):
-    """Look up quote for symbol."""
-    url = f"https://finance.cs50.io/quote?symbol={symbol.upper()}"
     try:
-        response = requests.get(url)
-        response.raise_for_status()  # Raise an error for HTTP error responses
-        quote_data = response.json()
-        return {
-            "name": quote_data["companyName"],
-            "price": quote_data["latestPrice"],
-            "symbol": symbol.upper()
-        }
-    except requests.RequestException as e:
-        print(f"Request error: {e}")
-    except (KeyError, ValueError) as e:
-        print(f"Data parsing error: {e}")
-    return None
-
-
-def usd(value):
-    """Format value as USD."""
-    return f"${value:,.2f}"
+        date = datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
+        return date.strftime("%m/%d/%Y")
+    except:
+        return value #return original value if error occurs

@@ -5,7 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_session import Session
 import sqlite3
 
-from help import apology, login_required, lookup, usd
+from help import apology, login_required, formatTime
 
 # Import to save uploaded image
 from fileinput import filename
@@ -301,7 +301,7 @@ def catalog():
         filtered.append(dress)
     catalog = filtered
 
-    return render_template("catalog.html", catalog=catalog)
+    return render_template("catalog.html", catalog=catalog, formatTime=formatTime)
 
 
 #Test Select dress

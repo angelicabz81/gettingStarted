@@ -55,24 +55,33 @@
         <h3>No dresses match the selected filters. Please try different filters.</h3>
     {% else %}
 
-        {% for dress in catalog %}
-            <div class="card mb-4">
-                <img src='{{ dress["image_url"] }}' alt="Dress Image">
-                <h2 class = "body-font">{{ dress["size"] }}</h2>
-                <h2 class = "body-font">{{ dress["color"] }}</h2>
-                <h4 class = "body-font">{{ dress["time_posted"] }}</h4>
-                <br>
-                <form action = "/selectDress" method = "post">
-                    <input type="hidden" name="dressId" value="{{ dress['id'] }}">
-                    <button class="btn btn-primary" type="submit">Select dress</button>
-                </form>
-                <br
+        <div class="container">
+            <div class="row">
 
+        <!-- show catalog of dresses -->
+                {% for dress in catalog %}
+                        <div class = "col-md-4 mb-4">
+                            <div class = "card dress-card">
+                                <img class = "catalogImage mx-auto d-block" src='{{ dress["image_url"] }}' alt="Dress Image">
+                        
+                                <div class = "card-body">
+                                    <h2 class = "body-font">{{ dress["size"] }}</h2>
+                                    <h2 class = "body-font">{{ dress["color"] }}</h2>
+                                    <h4 class = "body-font">Posted on: {{ formatTime(dress["time_posted"]) }}</h4>
+                                    <br>
+
+                                    <form action = "/selectDress" method = "post">
+                                        <input type="hidden" name="dressId" value="{{ dress['id'] }}">
+                                        <button class="btn btn-primary" type="submit">Select dress</button>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                
+                {% endfor %}
             </div>
-
-
-
-        {% endfor %}
+        </div>
 
 
 
