@@ -1,26 +1,64 @@
-/* Size for brand */
+/* Background color*/
+body {
+  background-color: #FFD7D7; /* Or use hex codes, RGB, HSL, etc. */
+}
+
+/* Font Families */
+
+/* Imperial Script for headings*/
+.imperial {
+    font-family: 'Imperial Script', cursive;
+    font-weight: 700;
+    font-size: 450%;
+    color: #3B2F2F;
+}
+
+.body-font {
+    font-family: 'Merriweather', serif;
+    color: #3B2F2F
+}
+
+
+/* Main page */
+.btn-primary {
+    background-color: #C76B9B;
+    color: #F9E3EC;
+    border-color: #C76B9B;
+
+    font-size: 1.3rem;
+    border-radius: 10px;
+    padding: 10px 30px;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2);
+    
+}
+
+.btn-primary:hover {
+  background-color: #C989A2;
+  border-color: #C989A2;
+
+}
+
+#welcomeText {
+  text-shadow: 0px 2px 3px rgba(0,0,0,0.08);
+}
+
+/* Navbar */
+#navTitle  {
+    color: #F9E3EC;
+}
+
+.nav-link {
+    color: #F9E3EC;
+}
+
 nav .navbar-brand
 {
     font-size: xx-large;
 }
+.navbar {
+  background: linear-gradient(to right, #C76B9B, #cb7ea6)
+}
 
-/* Colors for brand */
-nav .navbar-brand .blue
-{
-    color: #537fbe;
-}
-nav .navbar-brand .red
-{
-    color: #ea433b;
-}
-nav .navbar-brand .yellow
-{
-    color: #f5b82e;
-}
-nav .navbar-brand .green
-{
-    color: #2e944b;
-}
 
 
 /* Table */
