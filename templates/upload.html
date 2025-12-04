@@ -68,38 +68,40 @@
       <!-- Drop down for sizes -->
     <form action="/upload" method="post" enctype="multipart/form-data">
 
-        
-        <div class = "mb-3">
-            <select class="form-select mx-auto w-auto" name="size" required>
-                <option value="" selected="">Size</option>
-                {% for size in ["x-small", "small", "medium", "large", "x-large"]%}
-                    <option value = "{{ size }}"> {{ size }} </option>
-                {% endfor %}
-            </select>
+        <div class = "container">
+
+            <div class = "mb-3">
+                <select class="form-select mx-auto w-auto" name="size" required>
+                    <option value="" selected="">Size</option>
+                    {% for size in ["x-small", "small", "medium", "large", "x-large"]%}
+                        <option value = "{{ size }}"> {{ size }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Drop down for colors -->
+            <div class = "mb-3">
+                <select class="form-select mx-auto w-auto" name="color" required>
+                    <option value="" selected="">Color</option>
+                    {% for color in ["red", "pink", "blue", "purple", "black", "white", "green", "yellow/gold", "gray/silver", "other"] %}
+                        <option value = "{{ color }}"> {{ color }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Allow user to upload photo of dress -->
+            <label for="image_uploads">Upload image of dress</label>
+            <div class = "mb-3">
+                <input type="file" id="image_uploads" name="dressImage" accept="image/png, image/jpeg, image/jpg" required>
+            </div>
+
+            <div class = "preview">
+                <p>No image currently selected</p>
+            </div>
+
+
+            <button type="submit">Upload dress</button>
         </div>
-
-        <!-- Drop down for colors -->
-        <div class = "mb-3">
-            <select class="form-select mx-auto w-auto" name="color" required>
-                <option value="" selected="">Color</option>
-                {% for color in ["red", "pink", "blue", "purple", "black", "white", "green", "yellow/gold", "gray/silver", "other"] %}
-                    <option value = "{{ color }}"> {{ color }} </option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <!-- Allow user to upload photo of dress -->
-         <label for="image_uploads">Upload image of dress</label>
-         <div class = "mb-3">
-            <input type="file" id="image_uploads" name="dressImage" accept="image/png, image/jpeg, image/jpg" required>
-        </div>
-
-        <div class = "preview">
-            <p>No image currently selected</p>
-        </div>
-
-
-        <button type="submit">Upload dress</button>
     </form>
 
      <!-- show dresses owned by user -->
