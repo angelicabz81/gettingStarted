@@ -6,6 +6,61 @@
 
 
 {% block main %}
+
+    <h1 class = "imperial mb-4">Your Current Holdings</h1>
+
+    {% if holdings|length == 0 %}
+        <h3 class = "body-font">You are not currently holding any dresses.</h3>
+    {% else %}
+
+        <div class="container">
+            <div class="row">
+                {% for dress in holdings %}
+                    <div class = "col-md-4 mb-4">
+                        <div class = "card dress-card">
+                            <img class = "catalogImage mx-auto d-block" src = "{{ dress['image_url'] }}">
+
+                            <div class = "card-body">
+                                <h5 class = "body-font">{{ "owner: " + dress["owner_name"] }}</h5>
+                                <h5 class = "body-font">{{ "email: " + dress["owner_email"]}}</h5>
+                                <h5 class = "body-font">{{ "phone: " + dress["owner_phone"]}}</h5>
+
+                                <form action = "/returnDress" method = "post">
+                                    <input type="hidden" name="dressId" value="{{ dress['id'] }}">
+                                    <button class="btn btn-primary" type="submit">Return dress</button>
+                                </form>
+                                <br>
+
+                                <form action="/messages" method="post" class="mt-2">
+                                    <input type="hidden" name="receiver_id" value="{{ dress['owner_id'] }}">
+                                    <input type="hidden" name="dress_id" value="{{ dress['id'] }}">
+                                    <div class="input-group">
+                                        <input type="text" name="body" class="form-control" placeholder="Message owner..." required>
+                                        <button type="submit" class="btn btn-primary btn-sm">Send</button>
+                                    </div>
+                                </form>
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+
+            </div>
+        </div>
+    {% endif %}
+            
+
+
+
+    
+
+    <!--
     <table class = "table table-striped">
         <thead>
             <tr>
@@ -45,7 +100,7 @@
               {% endfor %}
         </tbody>
     </table>
-
+    -->
 
 
 

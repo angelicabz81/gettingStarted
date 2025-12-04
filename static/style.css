@@ -8,6 +8,7 @@ body {
 /* Imperial Script for headings*/
 .imperial {
     font-family: 'Imperial Script', cursive;
+    text-shadow: 0px 2px 3px rgba(0,0,0,0.08);
     font-weight: 700;
     font-size: 450%;
     color: #3B2F2F;
@@ -78,12 +79,8 @@ nav .navbar-brand
 
 }
 
-.filter-pill:hover {
-  background-color: #C989A2;
-}
-
 .btn-check:checked + .filter-pill {
-    background-color: #C98AA7;   /*Changes color after selection */
+    background-color: #c398ac;   /*Changes color after selection */
     color: white;
 }
 
@@ -94,13 +91,15 @@ nav .navbar-brand
 
 /* Catalog */
 .catalogImage{
-  width: 55%;
-  height: 300px;
+  width: 80%;
+  height: 80%;
   object-fit: cover;
+  object-position: center;
   border-radius: 10px;
 }
 
 .dress-card {
+  padding-top: 15px;
   height: 100%
 }
 

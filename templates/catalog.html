@@ -7,6 +7,7 @@
 
 {% block main %}
 
+    <h1 class = "imperial mb-4">Dress Catalog</h1>
 
     <form action = "/catalog" method = "get">
 
@@ -51,6 +52,7 @@
     
 
 <!-- Display catalog of dresses only if there are any dresses that match the filters -->
+
     {% if catalog|length == 0 %}
         <h3>No dresses match the selected filters. Please try different filters.</h3>
     {% else %}
@@ -65,9 +67,9 @@
                                 <img class = "catalogImage mx-auto d-block" src='{{ dress["image_url"] }}' alt="Dress Image">
                         
                                 <div class = "card-body">
-                                    <h2 class = "body-font">{{ dress["size"] }}</h2>
-                                    <h2 class = "body-font">{{ dress["color"] }}</h2>
-                                    <h4 class = "body-font">Posted on: {{ formatTime(dress["time_posted"]) }}</h4>
+                                    <h2 class = "body-font">{{ "size: " + dress["size"] }}</h2>
+                                    <h2 class = "body-font">{{ "color: " + dress["color"] }}</h2>
+                                    <h4 class = "body-font">{{ "Posted on: " + formatTime(dress["time_posted"]) }}</h4>
                                     <br>
 
                                     <form action = "/selectDress" method = "post">
