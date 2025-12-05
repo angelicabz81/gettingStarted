@@ -1,10 +1,17 @@
-import os
+"""
+Programmer: Angelica Benitez
+Project: Pocket Quince
+"""
 
+
+# Import Libraries
+import os
 from flask import Flask, flash, g, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_session import Session
 import sqlite3
 
+# Import functions from help.py
 from help import apology, login_required, formatTime
 
 # Import to save uploaded image
@@ -13,121 +20,125 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-# For Upload Route
-# Creates path to the folder where all uploaded folders will be held, in / format: project/static/uploads
-# Hardcoding /static/uploads, Flask may have difficulty finding correct directory
+
+
+# Sourced from: https://docs.python.org/3/library/os.path.html#os.path.join
+# For upload route
+# Creates path to the folder for uploaded images, in / format: project/static/uploads
+    # Hardcoding /static/uploads, Flask may have difficulty finding correct directory
 # app.root_path is the absolute file system path to folder where main Flask file is/ to Flask base directory
+
+#Absolute Path is the full system path to the directory where Flask app file is (where project folder is on computer)
 UPLOAD_FOLDER = os.path.join(app.root_path, "static", "uploads")
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
+#DELETE: this basically tells the app where to save the uploaded dress images, by creating a folder path to it
+# Then it stores that path in app.config so we can use it later
+
+
+# Permitted file types for dress image uploads
 ALLOWED_EXTENSIONS = {"png","jpg", "jpeg"}
 
-
 # Configure session to use filesystem (instead of signed cookies)
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
+app.config["SESSION_PERMANENT"] = False # Sessions end when browser closes
+app.config["SESSION_TYPE"] = "filesystem" #Session data held in local files
+Session(app) # Activate Flask-Session with settings ^
 
 # Path to SQLite database file
 DATABASE = "wardrobe.db"
 
 # Database connection management
+# g is Flask object used to temporarily store daya
 def get_db():
-    if "db" not in g:
-        g.db = sqlite3.connect(DATABASE)
-        g.db.row_factory = sqlite3.Row # Enable dictionary-like row access
-    return g.db
+    if "db" not in g: # Check if database connection already exists
+        g.db = sqlite3.connect(DATABASE) # Open database and store connection for reuse
+        g.db.row_factory = sqlite3.Row # Enable dictionary-like row access for reading
+    return g.db # Return database connection
 
+
+# Closes database and clears g at end of EVERY request, Flask runs automatically
 @app.teardown_appcontext
 def close_db(exception):
-    db = g.pop('db', None)
-    if db is not None:
+    db = g.pop('db', None) # Extracts database connection, if exists
+    if db is not None: # If database found
         db.close()
 
 
+# Runs after every request, but before response is sent to user
+# Prevents browser from saving old copies, always showed updated page
 @app.after_request
-def after_request(response):
+def after_request(response): 
     """Ensure responses aren't cached"""
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     response.headers["Expires"] = 0
     response.headers["Pragma"] = "no-cache"
     return response
 
-"""
-test page
-@app.route("/")
-def home():
-    db = get_db()
-    cursor = db.execute('SELECT * FROM dummy').fetchall()
-    one = cursor[0]["boba"]
-    return f"How many boba drinks!! {one}"
-"""
-
 
 # Register
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    """Register user"""
+    """Register user by taking in username, email, phone, password and password confirmation"""
 
     if request.method == "POST":
 
-        db = get_db()
-        # Validate username
+        db = get_db() # Establish database connection to wardrobe.db
+
+        # Validate username, show error if empty
         username = request.form.get("username")
         if not username:
-            return apology("Must provide username", 400)
+            return apology("Must provide username", 400) 
 
-
-        # Validate email
+        # Validate email, show error if empty
         email = request.form.get("email")
         if not email:
             return apology("Must provide email", 400)
 
-        print("test update")
-        # Validate phone number
+        # Validate phone number, show error if empty
         phone = request.form.get("phone")
         if not phone:
             return apology("Must provide phone", 400)
 
-        # Validate password
+        # Validate password, show error if empty
         password = request.form.get("password")
         confirmation = request.form.get("confirmation")
 
+        # Ensure both password and confirmation are typed in, and are identical
         if not password or not confirmation or password != confirmation:
             return apology("Input valid password", 400)
 
-        # Check for duplicate username
+        # Check for duplicate username in users table, inputting username parameter as tuple
+        # Tuple is container that can hold multiple items
         existing = db.execute("SELECT 1 FROM users WHERE username = ?", (username,)).fetchone()
         if existing is not None:
-            return apology("username already exists", 400)
+            return apology("Username already exists", 400)
 
-        # ChatGPT suggested change: use parameter tuple to prevent SQL injection
-        # Insert new user into users table (use parameter tuple and commit)
+        # Insert new user into users table, input parameters as tuple
         try:
-            db.execute(
-                "INSERT INTO users (username, email, phone, hash) VALUES (?,?,?,?)",
-                (username, email, phone, generate_password_hash(password)),
-            )
-            db.commit()
-        except sqlite3.IntegrityError:
-            return apology("username already exists", 400)
-        except Exception:
+            db.execute("INSERT INTO users (username, email, phone, hash) VALUES (?,?,?,?)",
+                (username, email, phone, generate_password_hash(password)),)
+            db.commit() # Save changes to database
+
+
+        except sqlite3.IntegrityError: # UNIQUE username violated
+            return apology("Username already exists", 400)
+        except Exception: # Other errors
             return apology("Registration failed", 500)
 
-        # Go to homepage
+        # Go to pre-login homepage 
         flash("You are registered!")
         return redirect("/")
     else:
+        # Open registration page
         return render_template("register.html")
 
 # Log in
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    """Log user in"""
+    """Log user in with username and password"""
 
-    # Forget any user_id
-    session.clear()
-    db = get_db()
+    session.clear() # Forget any user_id
+    db = get_db() # Establish database connection to wardrobe.db
 
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
