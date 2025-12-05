@@ -119,6 +119,15 @@ nav .navbar-brand
 /* For UPLOAD FORM */
 
 
+.preview img {
+  width: 60%;
+  height: 60%;
+  object-fit: cover;
+}
+#image_uploads {
+    position: absolute;
+    left: -9999px;    /* move file upload  button off screen */
+}
 
 form img {
   height: 300px;

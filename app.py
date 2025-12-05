@@ -80,6 +80,7 @@ def after_request(response):
 def register():
     """Register user by taking in username, email, phone, password and password confirmation"""
 
+    # User submits form via POST
     if request.method == "POST":
 
         db = get_db() # Establish database connection to wardrobe.db
@@ -140,38 +141,40 @@ def login():
     session.clear() # Forget any user_id
     db = get_db() # Establish database connection to wardrobe.db
 
-    # User reached route via POST (as by submitting a form via POST)
+    # User submits form via POST
     if request.method == "POST":
+
         # Ensure username was submitted
-        if not request.form.get("username"):
+        username = request.form.get("username")
+        if not username:
             return apology("must provide username", 400)
 
         # Ensure password was submitted
-        elif not request.form.get("password"):
+        password = request.form.get("password")
+        if not password:
             return apology("must provide password", 400)
 
         # Query database for username
         rows = db.execute(
-            "SELECT * FROM users WHERE username = ?", (request.form.get("username"),)
+            "SELECT * FROM users WHERE username = ?", (username,)
         ).fetchall()
 
-        # Ensure username exists and password is correct
+        # Ensure username exists once and password is correct
         if len(rows) != 1 or not check_password_hash(
-            rows[0]["hash"], request.form.get("password")
+            rows[0]["hash"], password
         ):
-            return apology("invalid username and/or password", 400)
+            return apology("Invalid username and/or password", 400)
 
-        # Remember which user has logged in
-        # THIS IS THE CURRENT USER LOGGED IN
+        # Remember which user has logged in, holds the current user
         session["user_id"] = rows[0]["id"]
 
-        # Redirect user to home page
+        # Redirect user to logged in home page
         return redirect("/")
 
-    # User reached route via GET (as by clicking a link or via redirect)
+    # User reached route via GET
     else:
+        # Open Login page
         return render_template("login.html")
-
 
 # Log out
 @app.route("/logout")
@@ -181,35 +184,30 @@ def logout():
     # Forget any user_id
     session.clear()
 
-    # Redirect user to login form
+    # Redirect user to pre login home page
     return redirect("/")
 
-
-# Go to home page
+# Home page
 @app.route("/")
 def landingPage():
-    #return render_template("index.html")
-    #return redirect("/catalog")
-    if "user_id" in session:
-        # Go to dress catalog for logged in users
-        return redirect("/catalog")
-    else:
-        #Homepage for not logged in users
-        return render_template("index.html")
+    """Redirect to home page based on session state"""
 
+    if "user_id" in session: # If user is logged in
+        return redirect("/catalog") # Go to dress catalog
+    else: # If user is not logged in
+        return render_template("index.html") # Go to title page
 
-
-
-
-
-# Upload dress to table
+# Upload dress
 @app.route("/upload", methods=["GET", "POST"])
 @login_required
 def upload():
+    """Allow user to upload dress, and add dress info to dresses table"""
 
+    # User submits dress upload form, submits via POST
     if request.method == "POST":
 
-        db = get_db()
+        db = get_db() # Establish database connection to wardrobe.db
+
         # Validate size
         size = request.form.get("size")
         if not size:
@@ -220,42 +218,41 @@ def upload():
         if not color:
             return apology("Must input color")
 
-        # Validate image file
+        # Validate image presence
         image = request.files.get("dressImage")
         if not image:
             return apology("Must upload dress image")
 
-        # Insert new dress into dresses table (use parameter tuple and commit)
-        cur = db.execute(
-            "INSERT INTO dresses (size, color, owner) VALUES (?,?,?)",
-            (size, color, session["user_id"]),
-        )
-        db.commit()
+        # Insert new dress into dresses table with tuple for size, color, and current user as owner
+        cur = db.execute("INSERT INTO dresses (size, color, owner) VALUES (?,?,?)",
+            (size, color, session["user_id"]),)
+        db.commit() # Save database changes
 
-        # Get the id of the newly inserted dress
+        # Get the id of the newly inserted dress, as id in dresses is auto-incremented
         dress_id = cur.lastrowid
 
-        # Set file name to unique dress id.fileExtension
-        #Split original file name into its root(name) and file extension type
+        # Cleans file name, then splits into its root(name) and file extension type(what's after .)
         root, ext = os.path.splitext(secure_filename(image.filename))
+
+        # Creates new file name in format: dress_id.fileExtension
         filename = f"{dress_id}{ext}"
 
         # Builds full path to uploads folder for image, and saves that image in the folder
+        # Ex: static/uploads/dress_id.fileExtension
         filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-        image.save(filepath)
+        image.save(filepath) # Writes image to file path
 
-        # URL generated by flask to the image file, accesible by browser
+        # String containing URL generated by Flask for image file in static folder, usable by browser
         image_url = url_for("static", filename=f"uploads/{filename}")
 
-        # Insert image url into dresses table for the correct id and commit
-        db.execute(
-            "UPDATE dresses SET image_url = ? WHERE id = ?",
-            (image_url, dress_id),
-        )
-        db.commit()
+        # Insert image url into dresses table for the correct id 
+        db.execute("UPDATE dresses SET image_url = ? WHERE id = ?",
+            (image_url, dress_id),)
+        db.commit() # Commit database changes
 
-        #return redirect("/") # goes to homepage, maybe change later?
-        return render_template("test.html", image_url=image_url)# test displaying the image
+        flash("Dress successfully uploaded")
+        return redirect("/") # goes to homepage, maybe change later?
+        #return render_template("test.html", image_url=image_url)# test displaying the image
 
     else:
         # get all dresses owned by the current user, and renter information
