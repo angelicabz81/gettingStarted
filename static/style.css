@@ -39,8 +39,16 @@ body {
 
 }
 
-#welcomeText {
+#welcomeTitle {
+  padding-top: 30px;
+  padding-bottom: 25px;
   text-shadow: 0px 2px 3px rgba(0,0,0,0.08);
+  font-size: 550%;
+}
+
+#welcomeText {
+  font-size: 200%;
+  padding-bottom: 25px;
 }
 
 /* Navbar */
@@ -167,7 +175,6 @@ form .upload-card {
   
 }
 
-
 /* For Home Page */
 
 
@@ -184,26 +191,36 @@ form .upload-card {
 }
 
 img.item {
-  width: 100%;
+  width: auto;
+  height: 150%;
+  max-width: 200px;  /* prevents it from getting too big */
   height: auto;
+  display: block;
+  margin: 0 auto;    /* center horizontally */
+
+
+  
 }
 
 .caption {
-  font-size: 14px;
+  padding-top: 10px;
+  font-size: 140%;
   text-align: center;
 }
 
-#handshakeImage {
-  width: 130px;
-  height: 130px;
+
+/* Inbox */
+.inboxImg {
+  width: 80%;
+  object-fit: cover;
+  display: block;        /* allows margin auto to work */
+  margin: 0 auto;        /* centers the image */  
+  object-position: center;
 }
 
-#moneyImage {
-  width: 130px;
-  height: 130px;
-}
-
-#dressImage {
-  width: 130px;
-  height: 130px;
+.inbox-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%
 }

@@ -65,50 +65,9 @@
     <!--upload dress-->
     
 
-      <!-- Drop down for sizes -->
-    <form action="/upload" method="post" enctype="multipart/form-data">
-
-        <div class = " card p-3 text-center upload-card">
-
-        
-            <select class="form-select mx-auto w-auto body-font" name="size" required>
-                <option value="" selected="">Size</option>
-                {% for size in ["x-small", "small", "medium", "large", "x-large"]%}
-                    <option value = "{{ size }}"> {{ size }} </option>
-                {% endfor %}
-            </select>
-            <br>
-            
-
-            <!-- Drop down for colors -->
-           
-            <select class="form-select mx-auto w-auto body-font" name="color" required>
-                <option value="" selected="">Color</option>
-                {% for color in ["red", "pink", "blue", "purple", "black", "white", "green", "yellow/gold", "gray/silver", "other"] %}
-                    <option value = "{{ color }}"> {{ color }} </option>
-                {% endfor %}
-            </select>
-            <br>
-
-
-            <!-- Allow user to upload photo of dress -->
-            <label for="image_uploads" class = "form-btn btn-primary body-font">Upload image of dress</label>
-            <input type="file" id="image_uploads" name="dressImage" accept="image/png, image/jpeg, image/jpg" required>
-            
-
-            <div class = "preview mt-2">
-                <p>No image currently selected</p>
-            </div>
-
-
-            <button type="submit" class = "form-btn btn-primary block">Upload dress</button>
-            
-        </div>
-    </form>
-
      <!-- show dresses owned by user -->
 
-    <h1 class = "imperial mb-4 mt-5">Your Uploaded Dresses</h1>
+    <h1 class = "imperial mb-4 mt-5">Your Dresses</h1>
     {% if dresses|length == 0 %}
         <h3 class = "body-font">You have not uploaded any dresses yet.</h3>
     {% else %}
@@ -147,5 +106,45 @@
 
                 {% endfor %}
             {% endif %}
+
+    <form action="/upload" method="post" enctype="multipart/form-data">
+
+        <h1 class = "imperial mb-4 mt-5">Upload new dress</h1>
+        <div class = " card p-3 text-center upload-card">
+
+            <select class="form-select mx-auto w-auto body-font" name="size" required>
+                <option value="" selected="">Size</option>
+                {% for size in ["x-small", "small", "medium", "large", "x-large"]%}
+                    <option value = "{{ size }}"> {{ size }} </option>
+                {% endfor %}
+            </select>
+            <br>
+            
+
+            <!-- Drop down for colors -->
+           
+            <select class="form-select mx-auto w-auto body-font" name="color" required>
+                <option value="" selected="">Color</option>
+                {% for color in ["red", "pink", "blue", "purple", "black", "white", "green", "yellow/gold", "gray/silver", "other"] %}
+                    <option value = "{{ color }}"> {{ color }} </option>
+                {% endfor %}
+            </select>
+            <br>
+
+
+            <!-- Allow user to upload photo of dress -->
+            <label for="image_uploads" class = "form-btn btn-primary body-font">Upload image of dress</label>
+            <input type="file" id="image_uploads" name="dressImage" accept="image/png, image/jpeg, image/jpg" required>
+            
+
+            <div class = "preview mt-2">
+                <p class = "body-text">No image currently selected</p>
+            </div>
+
+
+            <button type="submit" class = "form-btn btn-primary block">Upload dress</button>
+            
+        </div>
+    </form>
 
 {% endblock %}

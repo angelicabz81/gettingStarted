@@ -21,7 +21,7 @@
                         {% for size in ["x-small", "small", "medium", "large", "x-large"]%}
                             
                             <input class ="btn-check" type="checkbox" name="size" value="{{ size }}" id ="{{ size }}">
-                            <label class="btn btn-outline-secondary btn-sm filter-pill body-font" for="{{ size }}">{{ size }}</label>
+                            <label class="btn btn-outline-secondary btn-sm filter-pill body-font" for="{{ size }}">{{ size|capitalize }}</label>
                         
                         {% endfor %}
                     </div>
@@ -33,7 +33,7 @@
                         {% for color in ["red", "pink", "blue", "purple", "black", "white", "green", "yellow/gold", "gray/silver", "other"] %}
                             
                             <input class ="btn-check" type="checkbox" name="color" value="{{ color }}" id ="{{ color }}">
-                            <label class="btn btn-outline-secondary btn-sm filter-pill body-font" for="{{ color }}">{{ color }}</label>
+                            <label class="btn btn-outline-secondary btn-sm filter-pill body-font" for="{{ color }}">{{ color|title}}</label>
                         
                         {% endfor %}
                     </div>
@@ -41,7 +41,7 @@
             </div>
             <br>
             <div>
-                <button class = "btn btn-primary body-font" type="submit">filter!</button>
+                <button class = "btn btn-primary body-font" type="submit">Filter!</button>
             </div>
         </div>
 
@@ -67,14 +67,14 @@
                                 <img class = "catalogImage mx-auto d-block" src='{{ dress["image_url"] }}' alt="Dress Image">
                         
                                 <div class = "card-body">
-                                    <h2 class = "body-font">{{ "size: " + dress["size"] }}</h2>
-                                    <h2 class = "body-font">{{ "color: " + dress["color"] }}</h2>
+                                    <h2 class = "body-font">{{ "Size: " + dress["size"]|capitalize }}</h2>
+                                    <h2 class = "body-font">{{ "Color: " + dress["color"]|title }}</h2>
                                     <h4 class = "body-font">{{ "Posted on: " + formatTime(dress["time_posted"]) }}</h4>
                                     <br>
 
                                     <form action = "/selectDress" method = "post">
                                         <input type="hidden" name="dressId" value="{{ dress['id'] }}">
-                                        <button class="btn btn-primary" type="submit">Select dress</button>
+                                        <button class="btn btn-primary body-font" type="submit">Select dress</button>
                                     </form>
                                 </div>
 
