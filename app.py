@@ -405,7 +405,7 @@ def messages():
     else:
         #view messages
         messages = db.execute("SELECT messages.*, users.username as sender_name, dresses.image_url, dresses.size, dresses.color FROM messages JOIN users ON messages.sender_id = users.id LEFT JOIN dresses ON dresses.id = messages.dress_id WHERE messages.receiver_id = ? ORDER BY messages.created_at DESC", (session["user_id"],)).fetchall()
-        return render_template("messages.html", messages=messages)
+        return render_template("messages.html", messages=messages,formatTime=formatTime)
 
 
 

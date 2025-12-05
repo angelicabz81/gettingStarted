@@ -211,16 +211,60 @@ img.item {
 
 /* Inbox */
 .inboxImg {
-  width: 80%;
+  width: 90px;
+  height: 120px;
   object-fit: cover;
-  display: block;        /* allows margin auto to work */
-  margin: 0 auto;        /* centers the image */  
-  object-position: center;
+  border-radius: 10px;
 }
 
 .inbox-card {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%
+  height: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 1rem 1rem;
+
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.7rem;
+}
+
+.message-header-left {
+  display: flex;
+  align-items:center;
+  gap: 0.5rem;
+}
+
+.message-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #C76B9B;
+  color: #F9E3EC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-family: 'Merriweather', serif;
+}
+
+.message-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.message-bubble {
+  background: #fff;
+  border-radius: 18px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  font-size: 0.95rem;
+  text-align: left;
+  max-width: 100%;
 }
