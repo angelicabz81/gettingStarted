@@ -8,7 +8,7 @@
     <h2 class = "imperial">Inbox</h2>
     
     {%if messages|length == 0 %}
-        <h3>No messages yet</h3>
+        <h3 class = "body-font">No messages yet</h3>
     {%else%}
         
         <div class="container mt-4">
@@ -17,13 +17,14 @@
                 <div class="col-md-4 mb-4">
                     <div class="card inbox-card p-2">
 
+                        <!--Header-->
                         <div class = "message-header">
                             <div class = "message-header-left">
-                                </div class = "message-icon">
+                                <div class = "message-icon">
                                       <h3 class="body-font">{{ message["sender_name"][0] }}</h3>
                                 </div>  
 
-                                <div class = "body-font">
+                                <div class = "message-meta body-font">
                                     <h3 class="body-font">{{ message["sender_name"] }}</h3>
                                 </div>
                             </div>
@@ -35,8 +36,6 @@
                                 <h3 class="body-font">{{ message["body"] }}</h3>
                             </div>
                         </div>
-                        
-
 
                     </div>
                 </div>
