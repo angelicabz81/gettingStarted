@@ -103,32 +103,14 @@ nav .navbar-brand
   height: 100%
 }
 
-/* Table */
-
-.table {
-    --bs-table-color-type: initial;
-    --bs-table-bg-type: initial;
-    --bs-table-color-state: initial;
-    --bs-table-bg-state: initial;
-    --bs-table-color: var(--bs-emphasis-color);
-    --bs-table-bg: var(--bs-body-bg);
-    --bs-table-border-color: var(--bs-border-color);
-    --bs-table-accent-bg: transparent;
-    --bs-table-striped-color: var(--bs-emphasis-color);
-    --bs-table-striped-bg: rgba(var(--bs-emphasis-color-rgb), 0.05);
-    --bs-table-active-color: var(--bs-emphasis-color);
-    --bs-table-active-bg: rgba(var(--bs-emphasis-color-rgb), 0.1);
-    --bs-table-hover-color: var(--bs-emphasis-color);
-    --bs-table-hover-bg: rgba(var(--bs-emphasis-color-rgb), 0.075);
-    width: 100%;
-    margin-bottom: 1rem;
-    vertical-align: top;
-    border-color: var(--bs-table-border-color);
+.card {
+  background-color: #FFE6E6;
 }
 
 
-
 /* For UPLOAD FORM */
+
+
 
 form img {
   height: 300px;
@@ -142,12 +124,19 @@ form p {
 
 form label,
 form button {
-  background-color: #7f9ccb;
+
+  background-color: #C76B9B;
+  border: 1px #C76B9B;
+
   padding: 5px 10px;
-  border-radius: 5px;
-  border: 1px ridge black;
+  border-radius: 900px; 
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2);
+
   font-size: 0.8rem;
   height: auto;
+  display: inline-block;
+  width: auto;
+  cursor: pointer;
 }
 
 form label:hover,
@@ -166,13 +155,16 @@ form button:active {
   list-style-type: none;
 }
 
-
 /* For Catalogue*/
 
-table img {
-  height: 45%;
-  width: 45%;
-  order: 1;
+form .upload-card {
+  width: 50%; 
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  
 }
 
 

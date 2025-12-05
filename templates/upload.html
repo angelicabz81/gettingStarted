@@ -68,39 +68,40 @@
       <!-- Drop down for sizes -->
     <form action="/upload" method="post" enctype="multipart/form-data">
 
-        <div class = "container">
+        <div class = " card p-3 text-center upload-card">
 
-            <div class = "mb-3">
-                <select class="form-select mx-auto w-auto" name="size" required>
-                    <option value="" selected="">Size</option>
-                    {% for size in ["x-small", "small", "medium", "large", "x-large"]%}
-                        <option value = "{{ size }}"> {{ size }} </option>
-                    {% endfor %}
-                </select>
-            </div>
+        
+            <select class="form-select mx-auto w-auto body-font" name="size" required>
+                <option value="" selected="">Size</option>
+                {% for size in ["x-small", "small", "medium", "large", "x-large"]%}
+                    <option value = "{{ size }}"> {{ size }} </option>
+                {% endfor %}
+            </select>
+            <br>
+            
 
             <!-- Drop down for colors -->
-            <div class = "mb-3">
-                <select class="form-select mx-auto w-auto" name="color" required>
-                    <option value="" selected="">Color</option>
-                    {% for color in ["red", "pink", "blue", "purple", "black", "white", "green", "yellow/gold", "gray/silver", "other"] %}
-                        <option value = "{{ color }}"> {{ color }} </option>
-                    {% endfor %}
-                </select>
-            </div>
+           
+            <select class="form-select mx-auto w-auto body-font" name="color" required>
+                <option value="" selected="">Color</option>
+                {% for color in ["red", "pink", "blue", "purple", "black", "white", "green", "yellow/gold", "gray/silver", "other"] %}
+                    <option value = "{{ color }}"> {{ color }} </option>
+                {% endfor %}
+            </select>
+            <br>
+
 
             <!-- Allow user to upload photo of dress -->
-            <label for="image_uploads">Upload image of dress</label>
-            <div class = "mb-3">
-                <input type="file" id="image_uploads" name="dressImage" accept="image/png, image/jpeg, image/jpg" required>
-            </div>
+            <label for="image_uploads" class = "form-btn btn-primary body-font">Upload image of dress</label>
+            <input type="file" id="image_uploads" name="dressImage" accept="image/png, image/jpeg, image/jpg" required>
+            
 
-            <div class = "preview">
+            <div class = "preview mt-2">
                 <p>No image currently selected</p>
             </div>
 
 
-            <button type="submit">Upload dress</button>
+            <button type="submit" class = "form-btn btn-primary block">Upload dress</button>
             
         </div>
     </form>
