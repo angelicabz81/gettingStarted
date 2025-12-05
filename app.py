@@ -201,7 +201,7 @@ def landingPage():
 @app.route("/upload", methods=["GET", "POST"])
 @login_required
 def upload():
-    """Allow user to upload dress, and add dress info to dresses table"""
+    """Allow user to upload dress, add dress info to dresses table, and show uploaded dresses"""
 
     # User submits dress upload form, submits via POST
     if request.method == "POST":
@@ -250,63 +250,77 @@ def upload():
             (image_url, dress_id),)
         db.commit() # Commit database changes
 
-        flash("Dress successfully uploaded")
-        return redirect("/") # goes to homepage, maybe change later?
-        #return render_template("test.html", image_url=image_url)# test displaying the image
+        flash("Dress uploaded!")
+        return redirect("/") # goes to dress catalog
+    
+    else: # Show all dress owned by current user, and renter information if any
 
-    else:
-        # get all dresses owned by the current user, and renter information
-        db = get_db()
+        db = get_db() # Establish database connection to wardrobe.db
 
-        # all dresses owned by user
+        # Get all dress owned by user
         dressesBuffer = db.execute("SELECT * FROM dresses WHERE owner = ?", (session["user_id"],)).fetchall()
 
-        dresses = []
-        # append renter info, if any, to each dresses dictionary
-        for dress in dressesBuffer:
+        dresses = [] # Empty list for dresses to be added to
 
-            dress = dict(dress)  # Convert Row object to dictionary not readonly to allow changes
-            renter = db.execute("SELECT users.id as renter_id,users.username, users.email, users.phone FROM users JOIN holdings ON users.id = holdings.user_id WHERE holdings.dress_id = ? AND holdings.rent_end IS NULL", (dress["id"],)).fetchone()
-            
-            if renter:
+        # Append renter info, if any, to each dresses dictionary
+        for dress in dressesBuffer:
+            dress = dict(dress)  # Convert row object to dictionary- so it's not readonly- to allow changes
+
+            # Obtain renter of current dress if still rented out, with their id, username, email, and phone; Saved as dictionary
+            renter = db.execute("SELECT users.id as renter_id, users.username, users.email, users.phone FROM users JOIN holdings ON users.id = holdings.user_id WHERE holdings.dress_id = ? AND holdings.rent_end IS NULL", (dress["id"],)).fetchone()
+
+            if renter: # Check if dress is rented out
+
+                # Key-Value pairs in dictionaries
                 dress["renter_id"] = renter["renter_id"]
                 dress["renter"] = renter["username"]
                 dress["renter_email"] = renter["email"]
                 dress["renter_phone"] = renter["phone"]
-            else:
+
+            else: # Dress is not rented out
+
+                # Set values to None
                 dress["renter_id"] = None
                 dress["renter"] = None
                 dress["renter_email"] = None
                 dress["renter_phone"] = None
 
-            dresses.append(dress)
+            dresses.append(dress) # Add new dress to total list, as dictionary
 
+        # Open upload page, sending list of all dresses for display
         return render_template("upload.html", dresses=dresses)
-    
 
 # Show all dresses
 @app.route("/catalog", methods = ["GET"])
 @login_required
 def catalog():
-        
-    sizes = request.args.getlist("size")
-    colors = request.args.getlist("color")
+    """Obtain all dresses available for rent, allowing for filtering by color and size"""
 
-    db = get_db()
+    # Lists of user-selected filters    
+    sizes = request.args.getlist("size") # User selected sizes
+    colors = request.args.getlist("color") # User selected colors
 
-    # Only select dress that are not owned by the current user, not in holdings, or no longer being rented
+    db = get_db() # Establish database connection to wardrobe.db
+
+    # Only select dress that are not owned by the current user, and not being rented out
+        # Dress is rented out if dress is in holdings and rent_end is NULL, query excludes these dresses and where owner is current user
     catalog = db.execute("SELECT * FROM dresses WHERE id NOT IN ( SELECT dress_id FROM holdings WHERE rent_end IS NULL) AND owner != ?"
     ,( session["user_id"],)).fetchall()
-    print("Catalog before filtering:", catalog)
 
-    filtered = []
+    filtered = [] # Empty list that will hold dress fitting filters
+
+    # Adds dresses that fit selected filters to filtered dress list
     for dress in catalog:
 
+        # If user chose any desired sizes and current dress's size is not within this desired list
         if sizes and dress["size"] not in sizes:
-            continue
-        if colors and dress["color"] not in colors:
-            continue 
-        filtered.append(dress)
+            continue # Move on to next dress
+        # If user chose any desired colors and current dress's colors is not within the desired list
+        if colors and dress["color"] not in colors: 
+            continue # Move on to next dress
+
+        filtered.append(dress) # Add dress to list
+        
     catalog = filtered
 
     return render_template("catalog.html", catalog=catalog, formatTime=formatTime)
