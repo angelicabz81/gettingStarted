@@ -24,9 +24,9 @@
                             <img class = "catalogImage mx-auto d-block" src = "{{ dress['image_url'] }}" alt = "Dress image">
                             <div class = "card-body">
                                 <!-- Display dress owner, email, phone -->
-                                <h5 class = "body-font">{{ "owner: " + dress["owner_name"] }}</h5>
-                                <h5 class = "body-font">{{ "email: " + dress["owner_email"]}}</h5>
-                                <h5 class = "body-font">{{ "phone: " + dress["owner_phone"]}}</h5>
+                                <h5 class = "body-font">{{ "Owner: " + dress["owner_name"] }}</h5>
+                                <h5 class = "body-font">{{ "Email: " + dress["owner_email"]}}</h5>
+                                <h5 class = "body-font">{{ "Phone: " + dress["owner_phone"]}}</h5>
 
                                 <!-- Return button option-->
                                 <form action = "/returnDress" method = "post">
@@ -34,7 +34,7 @@
                                     <input type="hidden" name="dressId" value="{{ dress['id'] }}">
                                     <br>
                                     <!-- Return dress button to submit info about returned dress-->
-                                    <button class="btn btn-primary" type="submit">Return dress</button>
+                                    <button class="btn btn-primary body-font" type="submit">Return dress</button>
                                 </form>
                                 <br>
                                 <!-- Message to dress owner-->

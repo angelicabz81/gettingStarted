@@ -168,6 +168,8 @@ def login():
         # Remember which user has logged in, holds the current user
         session["user_id"] = rows[0]["id"]
 
+        session.permanent = False
+
         # Redirect user to logged in home page
         return redirect("/")
 
@@ -455,8 +457,6 @@ def messages():
 
         # Open message page, sending over all user messages
         return render_template("messages.html", messages=messages)
-
-# python3 -m pip
 
 # Run Flask application
 # python3 -m flask --app app --debug run
