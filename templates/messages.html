@@ -5,49 +5,49 @@
 {% endblock %}
 
 {% block main %}
+    <!-- Display messages sent to user-->
     <h2 class = "imperial">Inbox</h2>
     
+    <!-- If returned list messages is empty, no messages were sent to user -->
     {%if messages|length == 0 %}
         <h3 class = "body-font">No messages yet</h3>
     {%else%}
-        
         <div class="container mt-4">
             <div class="row">
+                <!-- Displays every message sent to user-->
                 {% for message in messages %}
                 <div class="col-md-4 mb-4">
                     <div class="card inbox-card p-2">
 
-                        <!--Header-->
+                        <!-- Message header with sender info-->
                         <div class = "message-header">
                             <div class = "message-header-left">
+                                <!-- Highlights first letter of sender's username -->
                                 <div class = "message-icon">
                                       <h3 class="body-font">{{ message["sender_name"][0] }}</h3>
                                 </div>  
-
+                                <!-- Sender's username -->
                                 <div class = "message-meta body-font">
                                     <h3 class="body-font">{{ message["sender_name"] }}</h3>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Message content-->
                         <div class = "message-body">
-                            <img class="inboxImg" src="{{ message['image_url'] }}"><br>
+                            <!-- Image of dress message concerns-->
+                            <img class="inboxImg" src="{{ message['image_url'] }}">
+                            <br>
+                            <!-- Actual message-->
                             <div class = "message-bubble body-font">
                                 <h3 class="body-font">{{ message["body"] }}</h3>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 {% endfor %}
             </div>
-        </div>
-
-            
-        
-            
-        
+        </div>        
     {% endif %}
 
 {% endblock %}
-

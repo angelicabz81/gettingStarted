@@ -8,111 +8,142 @@
     <script>
         
         // Ensure valid file format, show preview of image
+        // https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/file
+
+        // Wait for page to load
         document.addEventListener('DOMContentLoaded', function() {
-   
-        const input = document.getElementById("image_uploads");
-        const preview = document.querySelector(".preview");
+            
+            // Get file input and preview elements
+            const input = document.getElementById("image_uploads");
+            const preview = document.querySelector(".preview");
 
-        input.style.opacity = 0;
-        input.addEventListener("change", updateImageDisplay);
-        function updateImageDisplay() {
-        while (preview.firstChild) {
-            preview.removeChild(preview.firstChild);
-        }
+            input.style.opacity = 0;
 
-        const curFiles = input.files;
-        if (curFiles.length === 0) {
-            const para = document.createElement("p");
-            para.textContent = "No files currently selected for upload";
-            preview.appendChild(para);
-        } else {
-            const list = document.createElement("ul");
-            preview.appendChild(list);
+            // When user chooses file, call function
+            input.addEventListener("change", updateImageDisplay);
+            
+            function updateImageDisplay() {
 
-            for (const file of curFiles) {
-            const listItem = document.createElement("li");
-            const para = document.createElement("p");
+                // Delete current item in preview element 
+                while (preview.firstChild) {
+                    preview.removeChild(preview.firstChild);
+                }
+                
+                const curFiles = input.files; // Get selected file
+                // Empty message if user has not selected a file
+                if (curFiles.length === 0) {
+                    const para = document.createElement("p");
+                    para.textContent = "No files currently selected for upload";
+                    preview.appendChild(para);
+                } 
+                else { // If user has selected a file
 
-            if (validFileType(file)) {
-                //para.textContent = `File name ${file.name}`;
-                const image = document.createElement("img");
-                image.src = URL.createObjectURL(file);
-                image.alt = image.title = file.name;
+                    // Creates an unordered list for image and places it into preview element
+                    const list = document.createElement("ul");
+                    preview.appendChild(list);
 
-                listItem.appendChild(image);
-                listItem.appendChild(para);
-            } else {
-                para.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
-                listItem.appendChild(para);
+                    // Loops over each file, here one
+                    for (const file of curFiles) {
+
+                    // Creates a list item and p tag for each file, to be placed in preview element
+                    const listItem = document.createElement("li");
+                    const para = document.createElement("p");
+
+                    //Ensures valid file type, from fileTypes list
+                    if (validFileType(file)) {
+                        // Show preview of image
+
+                        // Creates image tag, sets source to image selected by user, sets alt text to file name
+                        const image = document.createElement("img");
+                        image.src = URL.createObjectURL(file);
+                        image.alt = image.title = file.name;
+
+                        // Adds image to list item 
+                        listItem.appendChild(image);
+                        listItem.appendChild(para);
+                    } 
+                    else { // File is not valid 
+                        // Error message
+                        para.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
+                        listItem.appendChild(para);
+                    }
+                    // Adds list item to list in preview element
+                    list.appendChild(listItem);
+                    }
+                }
             }
-            list.appendChild(listItem);
+            const fileTypes = [
+            "image/jpeg",
+            "image/jpg",
+            "image/png",
+            ];
+            
+            // Determines if valid file type
+            function validFileType(file) {
+            return fileTypes.includes(file.type);
             }
-        }
-        }
-        // https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Formats/Image_types
-        const fileTypes = [
-        "image/jpeg",
-        "image/jpg",
-        "image/png",
-        ];
-
-        function validFileType(file) {
-        return fileTypes.includes(file.type);
-        }
 
         });
     </script>
-
-    <!--upload dress-->
     
-
-     <!-- show dresses owned by user -->
+    <!-- Display dresses owned by user -->
 
     <h1 class = "imperial mb-4 mt-5">Your Dresses</h1>
+    <!-- If returned dresses list is empty, user does not own any dresses -->
     {% if dresses|length == 0 %}
         <h3 class = "body-font">You have not uploaded any dresses yet.</h3>
     {% else %}
         <div class="container">
             <div class="row">
+                <!-- Creates a card for each dress with rented status, along with renter information and ability to message renter -->
                 {% for dress in dresses %}
                     <div class = "col-md-4 mb-4">
                         <div class = "card dress-card">
                             <img class = "catalogImage mx-auto d-block" src = "{{ dress['image_url'] }}">
 
                             <div class = "card-body">
-
-                                {% if dress.renter_id %}
+                                <!-- If dress is rented out to someone -->
+                                {% if dress.renter_id %} 
+                                    <!-- Display renter username, email, phone -->
                                     <h3 class = "body-font text-danger">Currently rented out</h3>
                                     <h2 class = "body-font">{{ "renter: " + dress["renter"] }}</h2>
                                     <h2 class = "body-font">{{ "email: " + dress["renter_email"]}}</h2>
                                     <h2 class = "body-font">{{ "phone: " + dress["renter_phone"]}}</h2>
                                     <br>
 
+                                    <!-- Message to dress renter -->
                                     <form action="/messages" method="post" class="mt-2">
+                                        <!-- Invisible input with dress renter, current user id-->
                                         <input type="hidden" name="receiver_id" value="{{ dress['renter_id'] }}">
                                         <input type="hidden" name="dress_id" value="{{ dress['id'] }}">
+
+                                        <!-- Collect message content and send message, submit form-->
                                         <div class="input-group">
-                                            <input type="text" name="body" class="form-control" placeholder="Message renter..." required>
+                                            <input type="text" name="body" class="form-control body-font" placeholder="Message renter..." required>
                                             <button type="submit" class="btn btn-primary btn-sm">Send</button>
                                         </div>
                                     </form>
 
                                 {% else %}
+                                    <!-- Display availability message-->
                                     <h3 class = "body-font text-success">Available for rent</h3>
                                 {% endif %}
-
                             </div>
                         </div>
                     </div>
-
                 {% endfor %}
             {% endif %}
 
+    <!-- Upload new dress -->
     <form action="/upload" method="post" enctype="multipart/form-data">
 
         <h1 class = "imperial mb-4 mt-5">Upload new dress</h1>
         <div class = " card p-3 text-center upload-card">
 
+            <!-- 
+                Drop down for dress sizes
+                Creates option for each size in list, assigning a corresponding size value
+            -->
             <select class="form-select mx-auto w-auto body-font" name="size" required>
                 <option value="" selected="">Size</option>
                 {% for size in ["x-small", "small", "medium", "large", "x-large"]%}
@@ -120,10 +151,11 @@
                 {% endfor %}
             </select>
             <br>
-            
 
-            <!-- Drop down for colors -->
-           
+            <!-- 
+                Drop down for dress colors
+                Creates option for each color in list, assigning a corresponding color value
+            -->
             <select class="form-select mx-auto w-auto body-font" name="color" required>
                 <option value="" selected="">Color</option>
                 {% for color in ["red", "pink", "blue", "purple", "black", "white", "green", "yellow/gold", "gray/silver", "other"] %}
@@ -132,19 +164,17 @@
             </select>
             <br>
 
-
-            <!-- Allow user to upload photo of dress -->
+            <!-- Allow user to upload photo of dress, limiting to specific file types -->
             <label for="image_uploads" class = "form-btn btn-primary body-font">Upload image of dress</label>
             <input type="file" id="image_uploads" name="dressImage" accept="image/png, image/jpeg, image/jpg" required>
             
-
+            <!-- Display preview of selected image-->
             <div class = "preview mt-2">
                 <p class = "body-font">No image currently selected</p>
             </div>
 
-
+            <!-- Submit button for selected form-->
             <button type="submit" class = "form-btn btn-primary block body-font">Upload dress</button>
-            
         </div>
     </form>
 

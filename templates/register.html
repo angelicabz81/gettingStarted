@@ -4,9 +4,11 @@
     Register
 {% endblock %}
 
-
 {% block main %}
+    <!-- Registration page -->
     <form action="/register" method="post">
+
+        <!-- Get username, password, email, phone, password and password confirmation-->
         <div class="mb-3">
             <input autocomplete="off" autofocus class="form-control mx-auto w-auto body-font" name="username" placeholder="Username" type="text" required>
         </div>
@@ -22,6 +24,10 @@
         <div class="mb-3">
             <input class="form-control mx-auto w-auto body-font" name="confirmation" placeholder="Confirm password" type="password" required>
         </div>
+
+        <!-- Button submits forms and sends user information to /register route-->
         <button class="btn btn-primary body-font" type="submit">Register</button>
+
     </form>
+
 {% endblock %}
