@@ -30,10 +30,9 @@ body {
     border-radius: 10px;
     padding: 10px 30px;
     box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2);
-    
 }
 
-/* Button interaction */
+/* Button interaction when about to click */
 .btn-primary:hover {
   background-color: #C989A2;
   border-color: #C989A2;
@@ -66,7 +65,7 @@ nav .navbar-brand
     font-size: 150%;
 }
 
-.filter-pill { /* pill = rounded corners*/
+.filter-pill { /* pill = rounded corners, for aesthetic design */
   border-radius: 900px; 
   font-size: 100%;
   background-color: #C76B9B;
@@ -76,7 +75,7 @@ nav .navbar-brand
 }
 
 .btn-check:checked + .filter-pill {
-  background-color: #c398ac;   /*Changes color after selection of option */
+  background-color: #c398ac;   /* Changes color after selection of option */
   color: white;
 }
 
@@ -88,11 +87,11 @@ nav .navbar-brand
 
 /* For dress images */
 .catalogImage{
-  width: 80%;
+  width: 80%; /* Scales image */
   height: 80%;
   max-height: 550px;
   object-fit: cover; /* Scales content of image */
-  object-position: center;
+  object-position: center; /* Center image in dress-card */
   border-radius: 10px;
 }
 
@@ -108,9 +107,9 @@ nav .navbar-brand
 /* Upload form in upload.html */
 
 .preview img {
-  width: 60%;
+  width: 60%; /* Scale image*/
   height: 60%;
-  object-fit: cover;
+  object-fit: cover; /* Scale image content */
 }
 
 #image_uploads {
@@ -119,8 +118,7 @@ nav .navbar-brand
 }
 
 form img {
-  height: 300px;
-  order: 1;
+  height: 300px; /* Size of preview image */
 }
 
 form p {
@@ -129,7 +127,7 @@ form p {
 }
 
 form label,
-form button {
+form button { /* Button to submit forms */
 
   background-color: #C76B9B;
   border: 1px #C76B9B;
@@ -140,29 +138,28 @@ form button {
 
   font-size: 0.8rem;
   height: auto;
-  display: inline-block;
+  display: inline-block; /* Allows items to be next to element */
   width: auto;
   cursor: pointer;
 }
 
 .preview ul {
-  list-style-type: none;
+  list-style-type: none; /* Remove bullet points from list */
 }
 
 /* For Catalog in upload.html */
 
 form .upload-card {
   width: 50%; 
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
+  margin: 0 auto; /* Center card horizontally */
+  display: flex; /* Creates flexbox container */
+  flex-direction: column; /* Stacks items vertically */
   align-items: center;
-  
-  
 }
 
 
 /* Pre login home page */
+
 #welcomeTitle {
   padding-top: 30px;
   padding-bottom: 25px;
@@ -176,11 +173,11 @@ form .upload-card {
 }
 
 .image-container {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
+  display: flex; /* Creates flexbox container */
+  justify-content: center; /* Center items horizontally */
+  gap: 2rem; /* Adds space between items in container*/
   max-width: 300px;
-  margin: 0 auto;
+  margin: 0 auto; /* Center container on page*/
 }
 
 .item-container {
@@ -192,11 +189,8 @@ img.item {
   height: 150%;
   max-width: 200px;  /* Prevents it from getting too big */
   height: auto;
-  display: block;
-  margin: 0 auto;    
-
-
-  
+  display: block; /* Converts to block level element that takes up full width*/
+  margin: 0 auto;  /* Centers element */
 }
 
 .caption {
@@ -205,36 +199,34 @@ img.item {
   text-align: center;
 }
 
-
 /* Inbox */
 
 .inboxImg {
   width: 90px;
   height: 120px;
-  object-fit: cover;
+  object-fit: cover; /* Scales image content*/
   border-radius: 10px;
 }
 
 .inbox-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  display: flex; /* Converts to flex container */
+  flex-direction: column; /* Stack items vertically */
+  justify-content: space-between; /* Puts space b/w each element in container */
   height: 100%;
   max-width: 500px;
-  margin: 0 auto;
+  margin: 0 auto; /* Center horizontally */
   padding: 1rem 1rem;
-
 }
 
 .message-header {
-  display: flex;
-  justify-content: space-between;
+  display: flex; /* Converts to flex container */
+  justify-content: space-between; /* Puts space b/w each element in container*/
   margin-bottom: 0.7rem;
 }
 
 .message-header-left {
-  display: flex;
-  align-items:center;
+  display: flex; /* Converts to flex container */
+  align-items: center;
   gap: 0.5rem;
 }
 
@@ -244,16 +236,16 @@ img.item {
   border-radius: 50%;
   background: #C76B9B;
   color: #F9E3EC;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; /* Converts to flex container */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
   font-weight: 700;
   font-family: 'Merriweather', serif;
 }
 
 .message-body {
-  display: flex;
-  align-items: flex-start;
+  display: flex; /* Converts to flex container */
+  align-items: flex-start; /* Control vertical alignment for items in rows */
   gap: 0.75rem;
 }
 
