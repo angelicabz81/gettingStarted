@@ -302,7 +302,7 @@ def catalog():
 
     db = get_db() # Establish database connection to wardrobe.db
 
-    # Only select dress that are not owned by the current user, and not being rented out
+    # Select all dresses that are not owned by the current user, and not being rented out
         # Dress is rented out if dress is in holdings and rent_end is NULL, query excludes these dresses and where owner is current user
     catalog = db.execute("SELECT * FROM dresses WHERE id NOT IN ( SELECT dress_id FROM holdings WHERE rent_end IS NULL) AND owner != ?"
     ,( session["user_id"],)).fetchall()
@@ -320,124 +320,151 @@ def catalog():
             continue # Move on to next dress
 
         filtered.append(dress) # Add dress to list
-        
-    catalog = filtered
 
+    # Set full dress catalog to new list filtered list of dress
+    catalog = filtered
+     
+    # Open catalog page with list of dresses for display, and formatTime helper function 
     return render_template("catalog.html", catalog=catalog, formatTime=formatTime)
 
-
-#Test Select dress
+# Select dress
 @app.route("/selectDress", methods=["GET", "POST"])
 @login_required
 def selectDress():
+    """ Ensures selected dress is available, and moves rented dress to holdings table, keeping track of renter"""
 
+    # If user clicks select dress button
     if request.method == "POST":
-        dressId = request.form.get("dressId")
-        db = get_db()
 
-        # Get selected dress ID
+        db = get_db() # Establish database connection to wardrobe.db
+
+        # Get selected dress ID, validate
+        dressId = request.form.get("dressId")
         if not dressId:
             return apology("No dress selected")
-        flash("You have selected this dress!")
-
-        #Check that dress is available
+        
+        # Check that dress is available
+        # Select dress that matches dress id, is not rented out, and does not belong to current user
         available = db.execute("SELECT 1 FROM dresses WHERE id = ? AND owner != ? AND id NOT IN ( SELECT dress_id FROM holdings WHERE rent_end IS NULL)"
         ,( dressId, session["user_id"],)).fetchone()
 
-        if not available:
+        if not available: # If query does not output a dress, dress is not available
             return apology("Dress is not available")
 
-        # Add dress to user's holdings
+
+        flash("You have selected this dress!")
+
+        # Add dress to holdings table, with dress id and user id
         db.execute("INSERT INTO holdings (user_id, dress_id) VALUES (?, ?)", (session["user_id"], dressId))
-        db.commit()
 
-        return redirect("/holdings")# Go back to homepage
+        db.commit() # Save database changes
 
+        return redirect("/holdings")# Go to user's holdings page
+
+# Return dress
 @app.route("/returnDress", methods=["POST"])
 @login_required
 def returnDress():
+    """Returns dress by setting rent_end column in holdings table to current time"""
 
+    db = get_db() # Establish database connection to wardrobe.db
+    
+    # Get selected dress ID, validate
     dressId = request.form.get("dressId")
-    db = get_db()
-
-    #get selected dress ID
     if not dressId:
         return apology("No dress selected")
     
-    #Check that dress is in currently rented(in user's holdings)
+    # Check that dress is in currently rented out (in holdings, assigned to current user, rent_end is empty)
     rented = db.execute("SELECT 1 FROM holdings WHERE user_id = ? AND dress_id = ? AND rent_end IS NULL", (session["user_id"], dressId)).fetchone()
-    if not rented:
+
+    if not rented: # If query does not output dress, dress is not currently rented by user
         return apology("Dress is not currently rented")
     
-    # Set rent_end to current time
+    # Return dress by setting rent_end to current time
     db.execute("UPDATE holdings SET rent_end = CURRENT_TIMESTAMP WHERE user_id = ? AND dress_id = ? AND rent_end IS NULL",(session["user_id"], dressId))
-    db.commit()
+    db.commit() # Save database changes
 
     flash("Thank you for returning the dress!")
-    return redirect("/")# Go back to homepage
+    return redirect("/")# Go back to catalog page
 
-
-
-
-
-# Holdings page
+# Holdings
 @app.route("/holdings")
 @login_required
 def holdings():
-    db = get_db()
+    """Gets dresses that user is currently renting out, from holdings table"""
 
+    db = get_db() # Establish database connection to wardrobe.db
+
+    # Selects all dresses user is renting out from holdings, where user id is current user's and rent_end is empty
     holdingBuffer = db.execute("SELECT * FROM dresses JOIN holdings as h on dresses.id = h.dress_id WHERE h.user_id = ? AND h.rent_end IS NULL ORDER BY h.rent_start DESC", (session["user_id"],)).fetchall()
 
-    #Add owner info to each holding
-    holdings = []
+    #Add dress owner's info to each holding
+    holdings = [] # Empty list for all rented dresses
+
     for holding in holdingBuffer:
         holding = dict(holding)  # Convert Row object to dictionary not readonly to allow changes
 
+        # Add new key of owner id, copying over value of "owner"
         holding["owner_id"] = holding["owner"]
 
+        # Gets info on dress owner from users table: username, email, phone 
         owner = db.execute("SELECT username, email, phone FROM users WHERE id = ?", (holding["owner"],)).fetchone()
+
+        # Adds each piece of info into holding dictionary
         holding["owner_name"] = owner["username"]
         holding["owner_email"] = owner["email"]
         holding["owner_phone"] = owner["phone"]
-        holdings.append(holding)
+
+        holdings.append(holding) # Add updated dictionary to list
+
+    # Open holdings page with list of dresses rented out
     return render_template("holdings.html", holdings=holdings)
 
-
-#MESSAGES????
+# Messages
 @app.route("/messages", methods=["GET", "POST"])
 @login_required
 def messages():
-    db = get_db()
+    """Allow users to send and view messages to owners of dresses they have rented"""
+    
+    db = get_db() # Set up database connection to wardrobe.db
 
-    #send a message
+    # Send a message
     if request.method == "POST":
+
+
+        # Validate message content, dress id and receipient id
         receiver_id = request.form.get("receiver_id")
         content = request.form.get("body")
         dress_id = request.form.get("dress_id")
 
-        if not receiver_id or not content:
+        if not receiver_id or not content or not dress_id:
             return apology("Missing message information")
 
+        # Send message by inserting message content, recipient, and dress it correlates to into messages, with sender being current user
         db.execute("INSERT INTO messages (sender_id, receiver_id, dress_id, body) VALUES (?,?,?,?)",
                      (session["user_id"], receiver_id, dress_id, content)) 
-        db.commit()
+        db.commit() # Save database changes
 
         flash("Message sent!")
-        return redirect("/messages")
+        return redirect("/messages") # Allow for messages to be viewed
+    
+    # View messages
     else:
-        #view messages
+        # Select all messages where current user is recipient, along with information about the dress it concerns
         messages = db.execute("SELECT messages.*, users.username as sender_name, dresses.image_url, dresses.size, dresses.color FROM messages JOIN users ON messages.sender_id = users.id LEFT JOIN dresses ON dresses.id = messages.dress_id WHERE messages.receiver_id = ? ORDER BY messages.created_at DESC", (session["user_id"],)).fetchall()
-        return render_template("messages.html", messages=messages,formatTime=formatTime)
 
+        # Open message page, sending over all user messages
+        return render_template("messages.html", messages=messages)
 
-
-
-# in app.py
-#source .venv/bin/activate
 # python3 -m pip
+
+# Run Flask application
 # python3 -m flask --app app --debug run
+ 
+# Starts the Flask web server with debug mode
 if __name__ == "__main__":
     app.run(debug=True)
 
+#SQLITE viewer
 #sqlite_web wardrobe.db
 
