@@ -4,9 +4,9 @@
     Error
 {% endblock %}
 
-
 {% block main %}
 
+    <!-- Display recieved error message on top of linked dress image -->
     <img alt="{{ top }}" class="border img-fluid" src="https://api.memegen.link/images/custom/{{ top | urlencode }}/{{ bottom | urlencode }}.jpg?background=https://media-photos.depop.com/b0/6746849/332267146_EpPBRtgkaX/P0.jpg&width=400" title="{{ top }}">
 
 {% endblock %}
