@@ -4,23 +4,26 @@
     Catalog
 {% endblock %}
 
-
 {% block main %}
-
     <h1 class = "imperial mb-4">Dress Catalog</h1>
 
+    <!-- Filter card for size and color -->
     <form action = "/catalog" method = "get">
-
-         <!--Filter between size in dresses -->
-
         <div class = "card p-3 mb-4">
             <div class = "row">
                 <div class = "col-md-6">
                     <h6 class = "filter-title mb-2 body-font">Size</h6>
+
+                    <!--
+                        Filter between size in dresses 
+                        Creates hidden checkbox and visible button for each size in list, assigning a corresponding size value
+                    -->
                     <div class = "d-flex flex-wrap gap-2">
                         {% for size in ["x-small", "small", "medium", "large", "x-large"]%}
                             
+                            <!-- Invisible checkbox with actual values-->
                             <input class ="btn-check" type="checkbox" name="size" value="{{ size }}" id ="{{ size }}">
+                            <!-- Visible button that displays option -->
                             <label class="btn btn-outline-secondary btn-sm filter-pill body-font" for="{{ size }}">{{ size|capitalize }}</label>
                         
                         {% endfor %}
@@ -29,6 +32,8 @@
 
                 <div class = "col-md-6">
                     <h6 class = "filter-title mb-2 body-font">Color</h6>
+
+                    <!--Filter between color in dresses -->
                     <div class = "d-flex flex-wrap gap-2">
                         {% for color in ["red", "pink", "blue", "purple", "black", "white", "green", "yellow/gold", "gray/silver", "other"] %}
                             
@@ -40,87 +45,52 @@
                 </div>      
             </div>
             <br>
+            <!-- Submit filter form button-->
             <div>
                 <button class = "btn btn-primary body-font" type="submit">Filter!</button>
             </div>
         </div>
-
-            
     </form>
-
    
     
+    <!-- Display catalog of dresses that match the filters, if any -->
 
-<!-- Display catalog of dresses only if there are any dresses that match the filters -->
-
-    {% if catalog|length == 0 %}
+    <!-- If no dresses are in returned list catalog, no dresses matched all filters-->
+    {% if catalog|length == 0 %} 
         <h3>No dresses match the selected filters. Please try different filters.</h3>
     {% else %}
-
         <div class="container">
             <div class="row">
 
-        <!-- show catalog of dresses -->
+                <!-- Creates a card with image and information for every dress in catalog list, along with select button -->
                 {% for dress in catalog %}
                         <div class = "col-md-4 mb-4">
                             <div class = "card dress-card">
+                                
+                                <!-- Dress image -->
                                 <img class = "catalogImage mx-auto d-block" src='{{ dress["image_url"] }}' alt="Dress Image">
-                        
                                 <div class = "card-body">
+
+                                    <!-- Display dress size, color, and date posted -->
                                     <h2 class = "body-font">{{ "Size: " + dress["size"]|capitalize }}</h2>
                                     <h2 class = "body-font">{{ "Color: " + dress["color"]|title }}</h2>
                                     <h4 class = "body-font">{{ "Posted on: " + formatTime(dress["time_posted"]) }}</h4>
                                     <br>
 
+                                    <!-- Creates button to select dress-->
                                     <form action = "/selectDress" method = "post">
+                                        <!-- Invisible input box with dress id value-->
                                         <input type="hidden" name="dressId" value="{{ dress['id'] }}">
+
+                                        <!-- Visible button for selecting dress, submitting form to /selectDress route -->
                                         <button class="btn btn-primary body-font" type="submit">Select dress</button>
                                     </form>
                                 </div>
-
                             </div>
                         </div>
-                
                 {% endfor %}
             </div>
         </div>
-
-
-
-
-        <!--
-        <table class = "table table-striped">
-            <thead>
-                <tr>
-                    <th class = "text-start">Size</th>
-                    <th class = "text-end">Color</th>
-                    <th class = "text-end">Date Posted</th>
-                    <th class = "text-end">Image</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for dress in catalog %}
-                    <tr>
-                        <td class = "text-start"> {{ dress["size"] }}</td>
-                        <td class = "text-end"> {{ dress["color"]}}</td>
-                        <td class = "text-end"> {{ dress["time_posted"] }}</td>
-                        <td class = "text-end"> <img src = '{{ dress["image_url"] }}' ></td>
-                        <td>
-                            <form action = "/selectDress" method = "post">
-                                <input type="hidden" name="dressId" value="{{ dress['id'] }}">
-                                <button class="btn btn-primary" type="submit">Select dress</button>
-                            </form>
-                        </td>
-                    </tr>
-
-                {% endfor %}
-            </tbody>
-        </table>
-        -->
-
-
-
     {% endif %}
 
 {% endblock %}
