@@ -1,6 +1,6 @@
 /* Background color*/
 body {
-  background-color: #FFD7D7; /* Or use hex codes, RGB, HSL, etc. */
+  background-color: #FFD7D7; 
 }
 
 /* Font Families */
@@ -14,18 +14,18 @@ body {
     color: #3B2F2F;
 }
 
+/* For body/content text */
 .body-font {
     font-family: 'Merriweather', serif;
     color: #3B2F2F
 }
 
 
-/* Main page */
+/* Buttons on pages */
 .btn-primary {
     background-color: #C76B9B;
     color: #F9E3EC;
     border-color: #C76B9B;
-
     font-size: 1rem;
     border-radius: 10px;
     padding: 10px 30px;
@@ -33,52 +33,40 @@ body {
     
 }
 
+/* Button interaction */
 .btn-primary:hover {
   background-color: #C989A2;
   border-color: #C989A2;
-
-}
-
-#welcomeTitle {
-  padding-top: 30px;
-  padding-bottom: 25px;
-  text-shadow: 0px 2px 3px rgba(0,0,0,0.08);
-  font-size: 550%;
-}
-
-#welcomeText {
-  font-size: 200%;
-  padding-bottom: 25px;
+  cursor: pointer;
 }
 
 /* Navbar */
 #navTitle  {
-    color: #F9E3EC;
+  color: #F9E3EC;
 }
 
 .nav-link {
-    color: #F9E3EC;
+  color: #F9E3EC;
 }
 
 nav .navbar-brand
 {
-    font-size: xx-large;
+  font-size: xx-large;
 }
 .navbar {
   background: linear-gradient(to right, #C76B9B, #cb7ea6)
 }
 
 
-/* Filter */
+/* Filter card in catalog.html */
 
 .filter-title {
     font-family: "Merriweather", serif;
     color: #3B2F2F;
     font-size: 150%;
-    
 }
 
-.filter-pill { /* pill, rounded corners*/
+.filter-pill { /* pill = rounded corners*/
   border-radius: 900px; 
   font-size: 100%;
   background-color: #C76B9B;
@@ -88,21 +76,22 @@ nav .navbar-brand
 }
 
 .btn-check:checked + .filter-pill {
-    background-color: #c398ac;   /*Changes color after selection */
-    color: white;
+  background-color: #c398ac;   /*Changes color after selection of option */
+  color: white;
 }
 
 .filter-button {
-    border-radius: 900px;
-    
+  border-radius: 900px;
 }
 
-/* Catalog */
+/* Catalog in catalog.html */
+
+/* For dress images */
 .catalogImage{
   width: 80%;
   height: 80%;
   max-height: 550px;
-  object-fit: cover;
+  object-fit: cover; /* Scales content of image */
   object-position: center;
   border-radius: 10px;
 }
@@ -116,16 +105,17 @@ nav .navbar-brand
   background-color: #FFE6E6;
 }
 
-/* For UPLOAD FORM */
+/* Upload form in upload.html */
 
 .preview img {
   width: 60%;
   height: 60%;
   object-fit: cover;
 }
+
 #image_uploads {
     position: absolute;
-    left: -9999px;    /* move file upload  button off screen */
+    left: -9999px;    /* Hide file upload button */
 }
 
 form img {
@@ -155,23 +145,11 @@ form button {
   cursor: pointer;
 }
 
-form label:hover,
-form button:hover {
-  background-color: #2d5ba3;
-  color: white;
-}
-
-form label:active,
-form button:active {
-  background-color: #0d3f8f;
-  color: white;
-}
-
 .preview ul {
   list-style-type: none;
 }
 
-/* For Catalogue*/
+/* For Catalog in upload.html */
 
 form .upload-card {
   width: 50%; 
@@ -183,8 +161,19 @@ form .upload-card {
   
 }
 
-/* For Home Page */
 
+/* Pre login home page */
+#welcomeTitle {
+  padding-top: 30px;
+  padding-bottom: 25px;
+  text-shadow: 0px 2px 3px rgba(0,0,0,0.08);
+  font-size: 550%;
+}
+
+#welcomeText {
+  font-size: 200%;
+  padding-bottom: 25px;
+}
 
 .image-container {
   display: flex;
@@ -201,10 +190,10 @@ form .upload-card {
 img.item {
   width: auto;
   height: 150%;
-  max-width: 200px;  /* prevents it from getting too big */
+  max-width: 200px;  /* Prevents it from getting too big */
   height: auto;
   display: block;
-  margin: 0 auto;    /* center horizontally */
+  margin: 0 auto;    
 
 
   
@@ -218,6 +207,7 @@ img.item {
 
 
 /* Inbox */
+
 .inboxImg {
   width: 90px;
   height: 120px;
