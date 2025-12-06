@@ -1,7 +1,9 @@
-Pocket Quince
-CS50 Final Project
-Programmer: Angelica Benitez
+**Pocket Quince**
+**CS50 Final Project**
+**Programmer: Angelica Benitez**
 
+
+OVERVIEW:
 Pocket-Quince is a dress-sharing platform created primarily for the Latino community, to provide support in quinceañera planning, a key milestone for 15 year old girls. 
 
 My platform allows users to rent dresses and upload dresses for other users to browse through in a dress catalog. My goal is to make quinceañeras more financially accessible and sustainable for all users. 
