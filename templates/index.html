@@ -6,30 +6,34 @@
 
 
 {% block main %}
-    <h1 id = "welcomeTitle" class = "imperial">Welcome to Pocket Quince!</h1>
-    <h2  id = "welcomeText"class = "body-font">Quinceañera dresses are key in Latina girlhood!</h2>
+  <!-- Home page before logging in-->
+
+  <h1 id = "welcomeTitle" class = "imperial">Welcome to Pocket Quince!</h1>
+  <h2  id = "welcomeText"class = "body-font">Quinceañera dresses are key in Latina girlhood!</h2>
 
 
-<div class="image-container">
+  <!-- Row of 3 images and captions-->
+  <div class="image-container">
 
-  <div class="item-container">
-    <img class="item" id = "moneyImage" src="/static/money.png" />
-    <p class="caption body-font">Buying them is stressful and expensive!</p>  
+    <div class="item-container">
+      <img class="item" id = "moneyImage" src="/static/money.png" alt="Cash outline" />
+      <p class="caption body-font">Buying them is stressful and expensive!</p>  
+    </div>
+    
+    <div class="item-container">
+      <img class="item" id = "handshakeImage" src="/static/handshake.png" alt="Image of handshake"/>
+      <p class="caption body-font">We make it easy and affordable!</p>  
+    </div>
+
+    <div class="item-container">
+      <img class="item" id = "dressImage" src="/static/dressIcon.png" alt = "Outline of dress" />
+      <p class="caption body-font">Rent or lend a dress today!</p>  
+    </div>
   </div>
-  
-  <div class="item-container">
-    <img class="item" id = "handshakeImage" src="/static/handshake.png" />
-    <p class="caption body-font">We make it easy and affordable!</p>  
-  </div>
 
-  <div class="item-container">
-    <img class="item" id = "dressImage" src="/static/dressIcon.png" />
-    <p class="caption body-font">Rent or lend a dress today!</p>  
+  <!-- Link to register page-->
+  <div class = "item-container">
+      <a class="btn btn-primary btn-lg body-font" href="/register">Find your dream dress!</a>
   </div>
-</div>
-
-<div class = "item-container">
-    <a class="btn btn-primary btn-lg body-font" href="/register">Find your dream dress!</a>
-</div>
   
 {% endblock %}
