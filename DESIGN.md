@@ -7,8 +7,8 @@
 Pocket-Quince is a web application that allows users to rent and upload Quinceañera dresses for others to rent.
 
 This design document describes the technical implementation of the project. 
-The application is primarily built with Flask for routing and templating, SQLite for data storage, server-side sessions for tracking current users, and file upload paths for storing dress images. 
 
+The application is primarily built with Flask for routing and templating, SQLite for data storage, server-side sessions for tracking current users, and file upload paths for storing dress images. 
 
 PROGRAM STRUCTURE:
     ├── app.py          # My main flask app
@@ -64,7 +64,7 @@ This table stores account information, specifically a user id, username, email, 
 
 While a username could have been used as the sole identifier for users, and the foreign key for identifying users in other tables, I chose to keep track of users in SQL queries and foreign keys through their id. 
 
-I reference users.id in many tables as a foreign key: including messages, holdings, and dresses. Using the id makes this relationship much simpler because the column becomes an integer field where all rows have a value similar in length, while username length could vary. The varying length of usernames would also make searching for a specific user a lot slower. Additionally, in future iterations, I hope to allow users to change their usernames. If I used usernames as the main identifier for a user, I would have to continuously update the foreign key fields it is referencenced in, rather than just the username row in users. 
+I reference users.id in many tables as a foreign key: including messages, holdings, and dresses. Using the id makes this relationship much simpler because the column becomes an integer field where all rows would have a value similar in length, while username length could vary. The varying length of usernames would also make searching for a specific user a lot slower. Additionally, in future iterations, I hope to allow users to change their usernames. If I used usernames as the main identifier for a user, I would have to continuously update the foreign key fields it is referencenced in, rather than just the username row in users. 
 
 I chose to hash passwords for security concerns, to ensure in the case of data leaks, account passwords remain secure. 
 
@@ -80,7 +80,7 @@ CREATE TABLE dresses (
     FOREIGN KEY (owner) REFERENCES users(id)
 );
 
-This tables holds information about all dresses uploaded by users. Specifically: a unique dress id for each dress, owner symbolizing the dress owner, size of the dress, color of the dress, image_url to the location of the dress image in files, and the time_posted for when the user uploaded a dress.
+This tables holds information about all dresses uploaded by users. Specifically: a unique dress id for each dress, owner symbolizing the dress owner id, size of the dress, color of the dress, image_url to the location of the dress image in files, and the time_posted for when the user uploaded a dress.
 
 I chose to give each dress a unique identifier that is automatically assigned, to be able to serve as a reference in foreign keys for holdings and messages. For example, if two dresses are the same size and color, a unique dress id would help differentiate between the two when searching for a specific dress. 
 
@@ -88,7 +88,7 @@ Size, color, and owner are all collected from the user and cannot be null, which
 
 I included time_posted so the user knows how long a dress has been available for, which could potentially tell users about the dress's popularity among other users.
 
-The largest design choice I made here was creating the foreign key owner, which references ids from the users table. Dress owners must have already made an account in order to have uploaded a dress, so as users they also have a user id. By establishing a relationship between dresses and users, I make sure that each dress uploaded belongs to an existing user and prevent a dress from being inserted with an invalid owner id(like if they do not exist). Foreign keys keep the data consistent in this way. 
+The largest design choice I made here was creating the foreign key owner, which references ids from the users table. Dress owners must have made an account in order to have uploaded a dress, so they also have a user id. By establishing a relationship between dresses and users, I make sure that each dress uploaded belongs to an existing user, and prevent a dress from being inserted with an invalid owner id(if they do not exist). Foreign keys keep the data consistent in this way. 
 
 3. holdings
 
@@ -135,7 +135,7 @@ I established three foreign keys, to users.id twice, and to dresses.id. There ar
 I am able to execute SQL queries by establishing a connection to wardrobe.db with get_db().
 
 get_db() works by using g, which is a Flask object used to TEMPORARILY store data. 
-This function opens the database and stores the connection within g using 'sqlite3.connect(DATABASE)' where 'DATABASE' is the path to the SQLite database file "wardrobe.db"
+This function opens the database and stores the connection within g using 'sqlite3.connect(DATABASE)' where 'DATABASE' is the path to the SQLite database file "wardrobe.db".
 
 I put in this request to make a connection in every route, and at the end of each request, g is automatically cleared and the database is closed. This happens due to teardown_appcontext. 
 
@@ -155,8 +155,7 @@ I checked that passwords were valid by checking that both the password and passw
 
 Checking if username already exists is actually done through a SQL query. The SQL query I execute searches for one row in the users table that has the username the current user wants to use. If no row is outputted, then the username is available.
 
-Officially registering a user actually means inserting a row into the users table corresponding to the user, using a SQL query of 'INSERT INTO'. I insert the values for the username, email, phone number, and password. The password is not inserted in its original form, but first hashed using the helper function generate_password_hash(password). This hashes the password and adds a layer of security to user information.
-
+Officially registering a user actually means inserting a row into the users table corresponding to the user, using a SQL query of 'INSERT INTO'. I insert the values for the username, email, phone number, and password. The password is not inserted in its original form, and is first hashed using the helper function generate_password_hash(password). This hashes the password and adds a layer of security to user information.
 
 **Logging in**:
 login.html and the route '/login' work together to log in a user. 
@@ -169,21 +168,20 @@ A user is logged in by first executing a SQL query searching for a row in the us
 
 The most important aspect of this function is setting the 'session["user_id"]' to the user id of the user logging in. Choosing to save the current user's id here allows for easy repeated use of the user's id, used when uploading dresses, renting, and sending messages. 
 
-Logging out:
+**Logging out**:
 When a user logs out, I clear the session 'session.clear', clearing the user id that is saved. 
-
 
 **Home page**: 
 I chose to  assign two home pages, one for before a user logs in and one for logged in users. I chose to do this because I wanted users who have not logged in to have a welcoming page that encourages them to register for the site.
 
-Both of these are assigned using the same route, '/'. I check if a user is logged in by checking if 'user_id' has a value, or 'if "user_id" in session'. If this is the case, I direct users to the main dress catalog as their homepage, redirecting them to the 'catalog' route. I chose to redirect to a route rather than open catalog.html iteself to ensure that first all available dresses are found, and that information is sent to catalog.html to be displayed. If users are not logged in, I direct them to the index.html page that has icons and information about the site's purpose, using 'render_template()'.
+Both of these are assigned using the same route, '/'. I check if a user is logged in by checking if 'user_id' has a value, or 'if "user_id" in session'. If this is the case, I direct users to the main dress catalog as their homepage, redirecting them to the 'catalog' route. I chose to redirect to a route rather than open catalog.html iteself to ensure that first all available dresses are found, and that the correct information is sent to catalog.html to be displayed. If users are not logged in, I direct them to the index.html page that has icons and information about the site's purpose, using 'render_template()'.
 
 **Uploading a dress**: 
 upload.html and the route '/upload' work together to allow a user to upload a dress along with its size and color specifications.
 
 upload.html has a form with a 'POST' method for secure data manipulation whose action is the '/upload' method. To allow for drop downs for size and color, I used <select> tags. Instead of hard coding each size and color option, I optimized the process by iterating over a list of sizes and color and creating options for every item in the list. This made it easier to expand the amount of color and sizes quickly. 
 
-For uploading images of the dress, I chose to add a dress preview to ensure users selected their desired photo. I did so by adding a class called "preview" within a <div> tag that initially started out with 'No image currently selected'. Within Javascript, I selected the input element that collected images, as well as the <div> tag with the class "preview". I then checked when the user selected an image, prompting the creation of an <img> element and url to the file. I set the image source be this url, and placed the image in the "preview" class tag. 
+For uploading images of the dress, I chose to add a dress preview to ensure users selected their desired photo. I did so by adding a class called "preview" within a <div> tag that initially started out with 'No image currently selected'. Within Javascript, I selected the input element that collected images, as well as the <div> tag with the class "preview". I then checked when the user selected an image, prompting the creation of an <img> element and url to the file. I set the image source to be this url, and placed the image in the "preview" class tag. 
 
 Once this 'POST' form was submitted, it executed the 'POST' part of '/upload'. I completed server-side validation of the inputted dress size, color, and image by checking that their values were not empty.
 
@@ -201,7 +199,7 @@ In addition to obtaining all dresses a user has uploaded, I wanted to obtain inf
 
 A dress was rented if it existed in holdings with the corresponding dress id, and rent_end was NULL, meaning it was rented but still with a user. In order to get information about the renters username and contacts, I completed a 'JOIN' of the users and holdings table on the foreign key, which compared users.id and holdings.user_id.
 
-If a row returned with a renter, I added a key in each dress dictionary with the renter's information. Then, I added this new dress dictionary to a new list holding all dresses. Finally, this list of dresses and their renters was sent when upload.html was rendered. Within upload.html, Jinja was used to iterate over every dress and create a card displaying the dress image. Using an Jinja if condition '{% if dress.renter_id %}' renter information was selectively shown, along with the option to message a renter. I chose to iterate over every dress in the list through a loop to allow for more readable html code for varying amounts of dresses.
+If a row returned with a renter, I added a key in each dress dictionary with the renter's information. Then, I added this new dress dictionary to a new list holding all dresses. Finally, this list of dresses and their renters was sent when upload.html was rendered. Within upload.html, Jinja was used to iterate over every dress and create a card displaying the dress image. Using a Jinja if condition '{% if dress.renter_id %}' renter information was selectively shown, along with the option to message a renter. I chose to iterate over every dress in the list through a loop to allow for more readable html code for large amounts of dresses.
 
 
 **Dress Catalog:**
@@ -209,11 +207,7 @@ catalog.html and the route '/catalog' work together to display all dresses avail
 
 catalog.html has a form with the 'GET' method and '/catalog' route action to access dress data. This form is used to collect the categories the user wants to filter dresses with. I chose not to limit the user on how many filters they could select, as it gives the user more freedom to specify the type of dress they are looking for. 
 
-I chose to implement each filter as an invisible checkbox 'btn-check' that I styled as pills for a more aesthetic design. This also allowed users to select more than one filter. 
-
-Once the form submitted, all colors and sizes the user selected were saved into a list accessible by 'request.args.getlist()' once in Python.
-
-The SQL query for all available dresses checked that 'owner !=' the current user, and only grabbed dresses not in the list of dresses still being rented using 'NOT IN'. 
+I chose to implement each filter as an invisible checkbox 'btn-check' that I styled as pills for a more aesthetic design. This also allowed users to select more than one filter. Once the form submitted, all colors and sizes the user selected were saved into a list accessible by 'request.args.getlist()' once in Python. The SQL query for all available dresses checked that 'owner !=' the current user, and only grabbed dresses not in the list of dresses still being rented using 'NOT IN'. 
 
 Then, to only return dresses matching the filters, I iterated over each dress, checking if the size and colors were empty(meaning there were no filters for them). As each dress was a dictionary, I checked if the dress's size and/or color was in the list of desired colors/sizes, and appended the dress to a new master list of filtered dresses if it matched all filters. This list was then returned when rendering catalog.html. I also returned the helper function formatTime, to allow it to be used in the Jinja template.
 
@@ -242,21 +236,26 @@ The form in holdings.html and the route '/returnDress' work together to return a
 
 Visually, this is only comprised of a 'Return dress' button. However, there is an invisible input box that holds the value of the selected dress id, under the name 'dressId' for use in '/returnDress'. This route only has a 'POST' method because data is only being added and manipulated, not accessed for use. In the route, server-side validation ensures the dressId element is not empty. Before a dress is returns, a SQL query searches for a dress that matches the selected dress id and is currently rented out(rent_end is NULL). If nothing is outputted, then the dress is rented and can be returned. Although the '/holdings' route already accounts for this by only showing rented dresses, this is an added layer of security. 
 
-A dress is actually returned by editing the row in holdings table with the corresponding dress id and an empty rent_end. So the SQL query uses 'UPDATE' to change rent_end to the current time, deeming the rent to be returned. Rather than render a page, this route request is completed by redirecting to '/', which leads to the catalog page.
+A dress is actually returned by editing the row in holdings table with the corresponding dress id and an empty rent_end. The SQL query uses 'UPDATE' to change rent_end to the current time, deeming the rent to be returned. Rather than render a page, this route request is completed by redirecting to '/', which leads to the catalog page.
 
 **Messages:**
 The forms in holdings.html and upload.html combined with the route '/messages' and messages.html work together to allow a user to send and receive messages. 
 
-Both the 'POST' forms in holdings.html and upload.html have input elements for the actual message, saved as the name 'body'. They also have hidden input values holding the 'dress_id' and the 'receiever_id'. In holdings.html, with the dresses the user is renting, the receiver id is the owner of the current dress. In upload.html, with the dresses the user owns, the receiver is is the renter of their dresses.
+Both the 'POST' forms in holdings.html and upload.html have input elements for the actual message, saved as the name 'body'. They also have hidden input values holding the 'dress_id' and the 'receiever_id'. In holdings.html, with the dresses the user is renting, the receiver id is the owner of the current dress. In upload.html, with the dresses the user owns, the receiver is the renter of their dresses.
 
-Once in '/messages', the 'POST' request ensures the receiver, message content, and dress id are not empty. A message is actually sent by creating a row in messages with the sender(current user), reciever, dress id and actual messsage content. This is done through a SQL query 'INSERT INTO'. Once this is done, the route redirects to '/message' again, but this time to show all the messages recieved by the user.
+Once in '/messages', the 'POST' request ensures the receiver, message content, and dress id are not empty. A message is actually sent by creating a row in messages with the sender(current user), receiver, dress id and actual messsage content. This is done through a SQL query 'INSERT INTO'. Once this is done, the route redirects to '/message' again, but this time to show all the messages recieved by the user.
 
 The 'GET' method request obtains all messages sent to the current user, as well as sender's username, and an image of the dress. This is done by using a SQL query to 'JOIN' the dresses and users table on the foreign keys I defined in the creation of each table. I chose to do this so users could get a visual indicator for the message topic, and be able to identify who to send a message back to. I then rendered the messages.html template, sending over the list of messages for display.
 
 In messages.html, each message in the list is iterated over and a card with the dress image, message content, and sender is displayed to the user. This is done by accessing the value by key in each dictionary(row in list). The decision not to display messages the current user has sent was made due to time constraints and leaves an avenue for future implementations. 
 
 
-**helper.py**
+**helper.py:**
 I chose to separate all helper functions into a distinct Python file to improve readability of app.py and not remove attention to the core logic of my application.
+
+**Visual Dress Card Design:**
+
+I chose to display each dress listing in an individual card over putting them all into a table to mock real-life online shopping listings. This also improved readability as users could distinctly separate each dress's information. I did so by placing content within a Bootstrap card class, a flexible content container.
+
 
 

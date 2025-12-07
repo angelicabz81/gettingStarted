@@ -4,10 +4,9 @@
 
 
 OVERVIEW:
-Pocket-Quince is a dress-sharing platform created primarily for the Latino community, to provide support in quinceañera planning, a key milestone for 15 year old girls. 
+Pocket-Quince is a dress-sharing platform created primarily for the Latino community, to provide support for Quinceañeras, a key milestone for 15 year old girls. 
 
-My platform allows users to rent dresses and upload dresses for other users to browse through in a dress catalog. My goal is to make quinceañeras more financially accessible and sustainable for all users. 
-
+My platform allows users to rent dresses and upload dresses for other users to browse through in a dress catalog. My goal is to make Quinceañeras more financially accessible and sustainable for all users. 
 
 This documentation serves as a user's manual for my project. My project was created on Visual Studio Code.
 
@@ -24,9 +23,9 @@ You must have these installed onto your device to be able to run my program.
 
     Check if pip is installed, this should print a version number:
     ```bash 
-     pip --version
+    pip --version
 **Flask**
-    Flask is the web framework for routes in app.py. 
+    Flask is the web framework for routes in app.py
 
     Install by:
     ```bash
@@ -79,7 +78,7 @@ PROGRAM STRUCTURE:
 CONFIGURATION:
 There is no additional configuration, just installing dependencies. I have already defined necessary paths in app.py including:
     - Path to database wardrobe.db
-    - Path to upload folder
+    - Path to upload folder for dress images
     - Configure session with Flask-Session
 
 
@@ -102,17 +101,17 @@ USING POCKET QUINCE:
 As a first time user, you should see a welcome page. Here you will have the option to register for an account or log in to an existing account.
 
 Register: 
-Click on the register link anreate an account by inputting a username, email, phone number, password and confirmation of password.
+Click on the register link and create an account by inputting a username, email, phone number, password and confirmation of password.
 
     Testing:
     Try to register an account with any missing fields. For any missing fields, you will get a pop up that tells you it is a required field. This is client-side validation.
 
-    After creating an account, go back to the register page and try to register with the same username. You will get routed to error page that tells you username already exists.
+    After creating an account, go back to the register page and try to register with the same username. You will get routed to an error page that tells you username already exists.
 
     Type in passwords that do not match up, you will get routed to an error page that tells you to input a valid password.
 
 Log in:
-Click on the log in page and enter your registered username and password
+Click on the log in page and enter your registered username and password.
 
     Testing:
     Try to login with a missing field. You will get a pop up that tells you it is a required field.
@@ -129,7 +128,6 @@ This is the first and main page opened upon logging in. Here you will find all a
 
     Rent a dress by pressing the 'select dress' button. This dress should be removed from catalog and should now be viewable in your holdings page.
 
-
 Holdings:
 This page shows all dresses a user is currently renting. It displays each dress owner's username, email, and phone number, as well as the option to send a message to the owner and return the dress. 
 
@@ -139,14 +137,13 @@ This page shows all dresses a user is currently renting. It displays each dress 
     Try to send a message by pressing the 'send' button. If your message field is empty you get a popup telling you it is a required field.
 
 Upload dress:
-This page shows all dresses a user owns and has uploaded for rent, along with information about its rented status. They are able to send messages to the renters. The user can upload a dress by specifying the size, color, and including an image of the dress.
+This page shows all dresses a user owns and has uploaded for rent, along with information about its rented status. Users are able to send messages to the renters. The user can upload a dress by specifying the size, color, and including an image of the dress.
 
     Testing:
 
     Try to upload a dress with any missing fields, you will get a popup that no image is selected or that you must select an item. 
 
     When uploading a photo, your Finder is opened and you will see any files that are not .jpeg, .png or .jpg are not available to be selected. 
-
 
 Inbox:
 This page shows all messages that have been sent to you by the people renting your dress or the people who own the dresses you have rented. 
