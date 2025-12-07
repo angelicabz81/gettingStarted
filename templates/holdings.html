@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block main %}
+
     <!-- Display all dresses a user is currently renting out, allowing them to message the dress owner-->
     <h1 class = "imperial mb-4">Your Current Holdings</h1>
 
@@ -37,7 +38,7 @@
                                     <button class="btn btn-primary body-font" type="submit">Return dress</button>
                                 </form>
                                 <br>
-                                <!-- Message to dress owner-->
+                                <!-- Message dress owner-->
                                 <form action="/messages" method="post" class="mt-2">
                                     <!-- Invisible input with dress owner, current user id-->
                                     <input type="hidden" name="receiver_id" value="{{ dress['owner_id'] }}">

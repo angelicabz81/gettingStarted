@@ -33,11 +33,16 @@
                 <div class = "col-md-6">
                     <h6 class = "filter-title mb-2 body-font">Color</h6>
 
-                    <!--Filter between color in dresses -->
+                    <!--
+                        Filter between color in dresses 
+                        Creates hidden checkbox and visible button for each color in list, assigning a corresponding color value
+                    -->
                     <div class = "d-flex flex-wrap gap-2">
                         {% for color in ["red", "pink", "blue", "purple", "black", "white", "green", "yellow/gold", "gray/silver", "other"] %}
-                            
+
+                            <!-- Invisible checkbox with actual values-->
                             <input class ="btn-check" type="checkbox" name="color" value="{{ color }}" id ="{{ color }}">
+                            <!-- Visible button that displays option -->
                             <label class="btn btn-outline-secondary btn-sm filter-pill body-font" for="{{ color }}">{{ color|title}}</label>
                         
                         {% endfor %}

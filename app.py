@@ -3,7 +3,6 @@ Programmer: Angelica Benitez
 Project: Pocket Quince
 """
 
-
 # Import Libraries
 import os
 from flask import Flask, flash, g, redirect, render_template, request, session, url_for
@@ -50,14 +49,12 @@ def get_db():
         g.db.row_factory = sqlite3.Row # Enable dictionary-like row access for reading
     return g.db # Return database connection
 
-
 # Closes database and clears g at end of EVERY request, Flask runs automatically
 @app.teardown_appcontext
 def close_db(exception):
     db = g.pop('db', None) # Extracts database connection, if exists
     if db is not None: # If database found
         db.close()
-
 
 # Runs after every request, but before response is sent to user
 # Prevents browser from saving old copies, always showed updated page
@@ -326,7 +323,7 @@ def catalog():
 @app.route("/selectDress", methods=["GET", "POST"])
 @login_required
 def selectDress():
-    """ Ensures selected dress is available, and moves rented dress to holdings table, keeping track of renter"""
+    """Ensures selected dress is available, and moves rented dress to holdings table, keeping track of renter"""
 
     # If user clicks select dress button
     if request.method == "POST":
