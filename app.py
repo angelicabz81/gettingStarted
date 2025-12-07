@@ -20,8 +20,6 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-
-
 # Sourced from: https://docs.python.org/3/library/os.path.html#os.path.join
 # For upload route
 # Creates path to the folder for uploaded images, in / format: project/static/uploads
@@ -48,7 +46,7 @@ Session(app) # Activate Flask-Session with settings ^
 DATABASE = "wardrobe.db"
 
 # Database connection management
-# g is Flask object used to temporarily store daya
+# g is Flask object used to temporarily store data
 def get_db():
     if "db" not in g: # Check if database connection already exists
         g.db = sqlite3.connect(DATABASE) # Open database and store connection for reuse
@@ -73,7 +71,6 @@ def after_request(response):
     response.headers["Expires"] = 0
     response.headers["Pragma"] = "no-cache"
     return response
-
 
 # Register
 @app.route("/register", methods=["GET", "POST"])
