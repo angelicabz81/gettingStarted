@@ -3,7 +3,7 @@
 **Programmer: Angelica Benitez**
 
 
-OVERVIEW:
+**OVERVIEW**:
 Pocket-Quince is a web application that allows users to rent and upload Quinceañera dresses for others to rent.
 
 This design document describes the technical implementation of the project. 
@@ -44,9 +44,11 @@ These three aspects connect to create the full-stack web application.
     A SQLite database called wardrobe.db stores 4 tables: users, dresses, holdings, and messages. These tables keep track of users, all dresses, establishing dress owners and renters.
 
 
-DATABASE DESIGN:
+**DATABASE DESIGN**:
 
 My program uses a SQLite database with 4 tables. I chose to use SQLite because of the smaller scale of this project. sqlite3 is a built in module, which allowed for more easy use with Flask.
+
+Whenever I checked for specific values in SQL queries, I inserted them as tuples, containers that held all values together.
 
 1. users
 
@@ -129,9 +131,7 @@ I chose to keep track of when the message was sent for use in future implementat
 I established three foreign keys, to users.id twice, and to dresses.id. There are two references to users.id because there are two users involved in messages: senders and recievers, both of whom must be registered users on the site. This ensures consistent records with valid users. I referenced dresses.id in order to show recipients the specific dress a message is concerning, so I could then use the dresses table to get the dress image.
 
 
-BACKEND:
-
-Database connection:
+**Database connection**:
 I am able to execute SQL queries by establishing a connection to wardrobe.db with get_db().
 
 get_db() works by using g, which is a Flask object used to TEMPORARILY store data. 
@@ -141,10 +141,10 @@ I put in this request to make a connection in every route, and at the end of eac
 
 I chose to establish connections in this way to ensure issues with potential memory leaks and having to excessively open a database for querying multiple times within one route.
 
-User authentication:
+**User authentication**:
 This is comprised of the routes '/register', '/login' and '/logout'.
 
-Registering:
+**Registering**:
 register.html and the route '/register' work together to register a user.
 
 Within the Jinja template register.html is a form that uses the 'POST' method. As input elements, it collects username, email, phone, and password of a user. All of these values are saved under their 'name' defined within each of the five elements. I used the 'POST' method because it is safe for sensitive data because data is not visible in the URL. 'POST' is best used for changing data. Once the form is submitted, I defined its route to be '/register', leading back to the app.py file. I defined two option: 'POST' method and 'GET' method. 'POST' is for submitting registration and 'GET' is for opening the page itself. 
@@ -158,7 +158,7 @@ Checking if username already exists is actually done through a SQL query. The SQ
 Officially registering a user actually means inserting a row into the users table corresponding to the user, using a SQL query of 'INSERT INTO'. I insert the values for the username, email, phone number, and password. The password is not inserted in its original form, but first hashed using the helper function generate_password_hash(password). This hashes the password and adds a layer of security to user information.
 
 
-Logging in:
+**Logging in**:
 login.html and the route '/login' work together to log in a user. 
 
 login.html contains a form with a 'POST' method, whose action is the '/login' method. It has input elements who take in the username and password, both given a 'name' for their value for use in the route. Elements are set as 'required' to ensure forms cannot be submitted without either element. 'POST' is used to keep sensitive information such as the password secure.
@@ -173,7 +173,34 @@ Logging out:
 When a user logs out, I clear the session 'session.clear', clearing the user id that is saved. 
 
 
-Home page: 
+**Home page**: 
 I chose to  assign two home pages, one for before a user logs in and one for logged in users. I chose to do this because I wanted users who have not logged in to have a welcoming page that encourages them to register for the site.
 
-Both of these are assigned using the same route, '/'. I check if a user is logged in by checking if 'user_id' has a value, or 'if "user_id" in session'. If this is the case, I direct users to the main dress catalog as their homepage, redirecting them to the 'catalog' route in order for all available dresses to be calculated and displayed. If not, I direct users to the index.html page that has icons and information about the site's purpose, using 'render_template()'.
+Both of these are assigned using the same route, '/'. I check if a user is logged in by checking if 'user_id' has a value, or 'if "user_id" in session'. If this is the case, I direct users to the main dress catalog as their homepage, redirecting them to the 'catalog' route. I chose to redirect to a route rather than open catalog.html iteself to ensure that first all available dresses are found, and that information is sent to catalog.html to be displayed. If users are not logged in, I direct them to the index.html page that has icons and information about the site's purpose, using 'render_template()'.
+
+**Uploading a dress**: 
+upload.html and the route '/upload' work together to allow a user to upload a dress along with its size and color specifications.
+
+upload.html has a form with a 'POST' method for secure data manipulation whose action is the '/upload' method. To allow for drop downs for size and color, I used <select> tags. Instead of hard coding each size and color option, I optimized the process by iterating over a list of sizes and color and creating options for every item in the list. This made it easier to expand the amount of color and sizes quickly. 
+
+For uploading images of the dress, I chose to add a dress preview to ensure users selected their desired photo. I did so by adding a class called "preview" within a <div> tag that initially started out with 'No image currently selected'. Within Javascript, I selected the input element that collected images, as well as the <div> tag with the class "preview". I then checked when the user selected an image, prompting the creation of an <img> element and url to the file. I set the image source be this url, and placed the image in the "preview" class tag. 
+
+Once this 'POST' form was submitted, it executed the 'POST' part of '/upload'. I completed server-side validation of the inputted dress size, color, and image by checking that their values were not empty.
+
+Officially uploading a dress means inserting a row into the dresses table with its information. I chose to do this in two steps: first inserting information about the size, color and owner(current user), then inserting the dress image url.
+
+For inserting the owner, I used the session["user_id"] that was defined in '/login', which holds the current user's id. I chose to split inserting dresses into two steps because I wanted to rename files inserted by users, so all files were under a clear format for readability. This format is: dressId.fileExtension. Inserting the first half of information would allow me to get the dress's id with 'cur.lastrowid' for use in renaming.
+
+In order to create the image url, I first created a new filename under the above format, ' f"{dress_id}{ext}" '. I wanted to place all images into my 'uploads' folder contained within the 'static' folder, meaning I had to create a full path to this folder. I created an absolute path to the folder by joining the root path to the static and uploads path, 'os.path.join(app.root_path, "static", "uploads")'. I then created a new path that joined this path to the image I wanted to save here, by 'os.path.join(app.config["UPLOAD_FOLDER"], filename)'. 'image.save' wrote the dress image to this file path. Once the image was in the desired folder, I created its url using 'url_for', which created the url in the format '/static/uploads/filename'. Finally, I added this missing information to the row of the dress id being uploaded using the SQL query 'UPDATE' since the row already existed. 
+
+I chose to store the image_url in the dresses table instead of the image itself to preserve efficiency. Storing large binary data would have slowed down queries and made it difficult to display images for users later.
+
+The '/upload' route also has a 'GET' method, which is used to obtain all dresses a user has previously uploaded. I used 'GET' because I am accessing data from the database, and the data does not carry sensitive information such as passwords. 
+
+In addition to obtaining all dresses a user has uploaded, I wanted to obtain information about the dress renters if applicable. I did so by first creating a buffer list of all dress owned by the user, with the SQL query 'SELECT'. I iterated over each dress(row) in that list and converted them to dictionaries. Then I completed a SQL query that searched for a renter.
+
+A dress was rented if it existed in holdings with the corresponding dress id, and rent_end was NULL, meaning it was rented but still with a user. In order to get information about the renters username and contacts, I completed a 'JOIN' of the users and holdings table on the foreign key, which compared users.id and holdings.user_id.
+
+If a row returned with a renter, I added a key in each dress dictionary with the renter's information. Then, I added this new dress dictionary to a new list holding all dresses. Finally, this list of dresses and their renters was sent when upload.html was rendered. Within upload.html, Jinja was used to iterate over every dress and create a card displaying the dress image. Using an Jinja if condition '{% if dress.renter_id %}' renter information was selectively shown, along with the option to message a renter. I chose to iterate over every dress in the list through a loop to allow for more readable html code for varying amounts of dresses.
+
+
