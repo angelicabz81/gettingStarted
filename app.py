@@ -117,7 +117,6 @@ def register():
                 (username, email, phone, generate_password_hash(password)),)
             db.commit() # Save changes to database
 
-
         except sqlite3.IntegrityError: # UNIQUE username violated
             return apology("Username already exists", 400)
         except Exception: # Other errors

@@ -35,7 +35,7 @@ THREE SYSTEM COMPONENTS:
 These three aspects connect to create the full-stack web application.
 
 1. **Frontend**
-    This is the layer that users see, implemented through Jinja templates in the '/templates' directory. These are styled through the stylesheet '/static/style.css'. Most templates, such as for catalog and holdings, insert data such as dress listings from routes.
+    This is the layer that users see, implemented through Jinja templates in the '/templates' directory. These are styled through the stylesheet '/static/style.css'. Most templates, such as for catalog and holdings, insert data such as dress listings from routes. 
 
 2. **Backend**
     This is where core logic is, in 'app.py'. Here a database connection is established, templates are rendered, server-side validation occurs, route handling, and session handling happens for users.
@@ -144,6 +144,36 @@ I chose to establish connections in this way to ensure issues with potential mem
 User authentication:
 This is comprised of the routes '/register', '/login' and '/logout'.
 
-/register:
+Registering:
+register.html and the route '/register' work together to register a user.
+
+Within the Jinja template register.html is a form that uses the 'POST' method. As input elements, it collects username, email, phone, and password of a user. All of these values are saved under their 'name' defined within each of the five elements. I used the 'POST' method because it is safe for sensitive data because data is not visible in the URL. 'POST' is best used for changing data. Once the form is submitted, I defined its route to be '/register', leading back to the app.py file. I defined two option: 'POST' method and 'GET' method. 'POST' is for submitting registration and 'GET' is for opening the page itself. 
+
+Within the 'POST' method I completed server-side validation. I did so by obtaining the information the user inputted using 'request.form.get()' and the name I defined for each element earlier, then checking if each element was empty. If elements were empty, I called helper function apology, that opened a page with an error message telling a user they must input those fields. I did also have client-side validation by using the 'required' tag in each input element within register.html, and the server-side validation is an extra layer of security. 
+
+I checked that passwords were valid by checking that both the password and password confirmation weren't empty, then comparing the two with 'password != confirmation' to prompt an 'apology()' error message if this was the case.
+
+Checking if username already exists is actually done through a SQL query. The SQL query I execute searches for one row in the users table that has the username the current user wants to use. If no row is outputted, then the username is available.
+
+Officially registering a user actually means inserting a row into the users table corresponding to the user, using a SQL query of 'INSERT INTO'. I insert the values for the username, email, phone number, and password. The password is not inserted in its original form, but first hashed using the helper function generate_password_hash(password). This hashes the password and adds a layer of security to user information.
 
 
+Logging in:
+login.html and the route '/login' work together to log in a user. 
+
+login.html contains a form with a 'POST' method, whose action is the '/login' method. It has input elements who take in the username and password, both given a 'name' for their value for use in the route. Elements are set as 'required' to ensure forms cannot be submitted without either element. 'POST' is used to keep sensitive information such as the password secure.
+
+Once the form submits, the 'POST' method in the route is executed. Server-side validation occurs as the two elements are obtained by 'request.form.get()' using their defined name, then validated for non-emptiness. 
+
+A user is logged in by first executing a SQL query searching for a row in the users table where the username matches the inputted user by 'WHERE username = ?', I chose not to input the user-inputted username directly to prevent SQL injection that could bring harm to the database. Then, I check if there is exactly one row returned, and call the helper function check_password_hash() to compare the inputted password to hashed password contained within users, here found in 'rows[0]["hash"].
+
+The most important aspect of this function is setting the 'session["user_id"]' to the user id of the user logging in. Choosing to save the current user's id here allows for easy repeated use of the user's id, used when uploading dresses, renting, and sending messages. 
+
+Logging out:
+When a user logs out, I clear the session 'session.clear', clearing the user id that is saved. 
+
+
+Home page: 
+I chose to  assign two home pages, one for before a user logs in and one for logged in users. I chose to do this because I wanted users who have not logged in to have a welcoming page that encourages them to register for the site.
+
+Both of these are assigned using the same route, '/'. I check if a user is logged in by checking if 'user_id' has a value, or 'if "user_id" in session'. If this is the case, I direct users to the main dress catalog as their homepage, redirecting them to the 'catalog' route in order for all available dresses to be calculated and displayed. If not, I direct users to the index.html page that has icons and information about the site's purpose, using 'render_template()'.
