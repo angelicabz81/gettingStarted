@@ -245,7 +245,15 @@ Visually, this is only comprised of a 'Return dress' button. However, there is a
 A dress is actually returned by editing the row in holdings table with the corresponding dress id and an empty rent_end. So the SQL query uses 'UPDATE' to change rent_end to the current time, deeming the rent to be returned. Rather than render a page, this route request is completed by redirecting to '/', which leads to the catalog page.
 
 **Messages:**
-The forms in holdings.html and upload.html combined with the route '/messages' work together to allow a user to send and receive messages. 
+The forms in holdings.html and upload.html combined with the route '/messages' and messages.html work together to allow a user to send and receive messages. 
+
+Both the 'POST' forms in holdings.html and upload.html have input elements for the actual message, saved as the name 'body'. They also have hidden input values holding the 'dress_id' and the 'receiever_id'. In holdings.html, with the dresses the user is renting, the receiver id is the owner of the current dress. In upload.html, with the dresses the user owns, the receiver is is the renter of their dresses.
+
+Once in '/messages', the 'POST' request ensures the receiver, message content, and dress id are not empty. A message is actually sent by creating a row in messages with the sender(current user), reciever, dress id and actual messsage content. This is done through a SQL query 'INSERT INTO'. Once this is done, the route redirects to '/message' again, but this time to show all the messages recieved by the user.
+
+The 'GET' method request obtains all messages sent to the current user, as well as sender's username, and an image of the dress. This is done by using a SQL query to 'JOIN' the dresses and users table on the foreign keys I defined in the creation of each table. I chose to do this so users could get a visual indicator for the message topic, and be able to identify who to send a message back to. I then rendered the messages.html template, sending over the list of messages for display.
+
+In messages.html, each message in the list is iterated over and a card with the dress image, message content, and sender is displayed to the user. This is done by accessing the value by key in each dictionary(row in list). The decision not to display messages the current user has sent was made due to time constraints and leaves an avenue for future implementations. 
 
 
 **helper.py**
