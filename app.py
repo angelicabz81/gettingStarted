@@ -325,7 +325,7 @@ def catalog():
     # Open catalog page with list of dresses for display, and formatTime helper function 
     return render_template("catalog.html", catalog=catalog, formatTime=formatTime)
 
-# Select dress
+# Rent dress
 @app.route("/selectDress", methods=["GET", "POST"])
 @login_required
 def selectDress():
@@ -348,7 +348,6 @@ def selectDress():
 
         if not available: # If query does not output a dress, dress is not available
             return apology("Dress is not available")
-
 
         flash("You have selected this dress!")
 
@@ -428,7 +427,6 @@ def messages():
 
     # Send a message
     if request.method == "POST":
-
 
         # Validate message content, dress id and receipient id
         receiver_id = request.form.get("receiver_id")

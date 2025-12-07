@@ -204,3 +204,51 @@ A dress was rented if it existed in holdings with the corresponding dress id, an
 If a row returned with a renter, I added a key in each dress dictionary with the renter's information. Then, I added this new dress dictionary to a new list holding all dresses. Finally, this list of dresses and their renters was sent when upload.html was rendered. Within upload.html, Jinja was used to iterate over every dress and create a card displaying the dress image. Using an Jinja if condition '{% if dress.renter_id %}' renter information was selectively shown, along with the option to message a renter. I chose to iterate over every dress in the list through a loop to allow for more readable html code for varying amounts of dresses.
 
 
+**Dress Catalog:**
+catalog.html and the route '/catalog' work together to display all dresses available for rent, and not owned by the current user. I chose to ensure users could not rent their own dresses because in the real world, that is illogical.
+
+catalog.html has a form with the 'GET' method and '/catalog' route action to access dress data. This form is used to collect the categories the user wants to filter dresses with. I chose not to limit the user on how many filters they could select, as it gives the user more freedom to specify the type of dress they are looking for. 
+
+I chose to implement each filter as an invisible checkbox 'btn-check' that I styled as pills for a more aesthetic design. This also allowed users to select more than one filter. 
+
+Once the form submitted, all colors and sizes the user selected were saved into a list accessible by 'request.args.getlist()' once in Python.
+
+The SQL query for all available dresses checked that 'owner !=' the current user, and only grabbed dresses not in the list of dresses still being rented using 'NOT IN'. 
+
+Then, to only return dresses matching the filters, I iterated over each dress, checking if the size and colors were empty(meaning there were no filters for them). As each dress was a dictionary, I checked if the dress's size and/or color was in the list of desired colors/sizes, and appended the dress to a new master list of filtered dresses if it matched all filters. This list was then returned when rendering catalog.html. I also returned the helper function formatTime, to allow it to be used in the Jinja template.
+
+Once in catalog.html, the list of filtered dresses is iterated over using Jinja '{% for dress in catalog %}', and a card is created with the dress specifications displayed. Another form is contained here giving users the option to rent each dress. 
+
+**Renting a dress:**
+Renting a dress is comprised of the routes '/selectDress', '/holdings' and '/returnDress'.
+
+
+**Select Dress:**
+The 'POST' form in catalog.html and the route '/selectDress' work together to allow a dress to be rented. Visually, this is only comprised of a 'Rent dress' button. However, there is an invisible input box that holds the value of the selected dress id, under the name 'dressId' for use in moving the dress to the holdings table. This route only has a 'POST' method because data is only being added and manipulated, not accessed for use. In the route, server-side validation ensures the dressId element is not empty. Before a dress is rented, a SQL query searches for a dress that matches the selected dress id and is not currently rented out(rent_end is not NULL). If nothing is outputted, then the dress is not available and cannot be rented out. Although the '/catalog' route already accounts for this by only showing available dresses, this is an added layer of security. 
+
+A dress is actually rented by creating a row in the holdings table with the dress id and renters id, using 'INSERT INTO'. Note that one dress can exist in multiple rows of holdings. This was a purposeful choice to be able to track ALL rental history of dresses. Rather than render a page, this route request is completed by redirecting to the holdings route to show all dress rented by user.
+
+**Check holdings:**
+holdings.html and the route '/holdings' work together to show users the dresses they are currently renting, as well as information about the owner. 
+
+'/holdings' does not have a set method because it is not called by a form, it is through either the '/selectDress' route or its link on the navigation bar. 
+
+In addition to obtaining all dresses a user has rented, I wanted to provide users contact information about the owners of each dress. I did so by first creating a buffer list of all dress rented by a user, with the SQL query 'SELECT'. I iterated over each holding(row) in that list and converted them to dictionaries to be able to edit them. Then I completed a SQL query that searched for an owner. This got contact information from the users table by selecting the row that matched the user id to the owner id, 'holding["owner"]'.
+
+I then added a key in each holding dictionary with the owner's information. Then, I added this new holding dictionary to a new list holding all dresses. Finally, this list of dresses and their owners was sent when holdings.html was rendered. Within holdings.html, Jinja was used to iterate over every dress and create a card displaying the dress image, owner information, and the button to return a dress. I chose to iterate over every dress in the list through a loop to allow for more readable html code for large amounts of dresses.
+
+**Return dress:**
+The form in holdings.html and the route '/returnDress' work together to return a dress to the catalog.
+
+Visually, this is only comprised of a 'Return dress' button. However, there is an invisible input box that holds the value of the selected dress id, under the name 'dressId' for use in '/returnDress'. This route only has a 'POST' method because data is only being added and manipulated, not accessed for use. In the route, server-side validation ensures the dressId element is not empty. Before a dress is returns, a SQL query searches for a dress that matches the selected dress id and is currently rented out(rent_end is NULL). If nothing is outputted, then the dress is rented and can be returned. Although the '/holdings' route already accounts for this by only showing rented dresses, this is an added layer of security. 
+
+A dress is actually returned by editing the row in holdings table with the corresponding dress id and an empty rent_end. So the SQL query uses 'UPDATE' to change rent_end to the current time, deeming the rent to be returned. Rather than render a page, this route request is completed by redirecting to '/', which leads to the catalog page.
+
+**Messages:**
+The forms in holdings.html and upload.html combined with the route '/messages' work together to allow a user to send and receive messages. 
+
+
+**helper.py**
+I chose to separate all helper functions into a distinct Python file to improve readability of app.py and not remove attention to the core logic of my application.
+
+
