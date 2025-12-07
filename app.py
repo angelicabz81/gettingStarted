@@ -30,9 +30,6 @@ app = Flask(__name__)
 UPLOAD_FOLDER = os.path.join(app.root_path, "static", "uploads")
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-#DELETE: this basically tells the app where to save the uploaded dress images, by creating a folder path to it
-# Then it stores that path in app.config so we can use it later
-
 
 # Permitted file types for dress image uploads
 ALLOWED_EXTENSIONS = {"png","jpg", "jpeg"}
