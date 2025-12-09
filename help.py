@@ -47,7 +47,7 @@ def login_required(f):
     return decorated_function
 
 def formatTime(value):
-    """Format a date to Month, Day, Year"""
+    """Format a date to Month/Day/Year"""
 
     try:
         date = datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
